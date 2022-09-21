@@ -551,7 +551,12 @@ defmodule Oli.Delivery.Attempts.Core do
         on:
           aa.id == pa2.activity_attempt_id and pa1.part_id == pa2.part_id and pa1.id < pa2.id and
             pa1.activity_attempt_id == pa2.activity_attempt_id,
+        left_join: ra in ResourceAttempt,
+        on: aa.resource_attempt_id == ra.id,
+        left_join: rev in Revision,
+        on: ra.revision_id == rev.id,
         where: aa.attempt_guid == ^activity_attempt_guid and is_nil(pa2),
+        preload: [activity_attempt: {aa, resource_attempt: {ra, revision: rev}}],
         select: pa1
       )
     )
@@ -735,6 +740,13 @@ defmodule Oli.Delivery.Attempts.Core do
     %PartAttempt{}
     |> PartAttempt.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, part_attempt} ->
+        Repo.preload(part_attempt, activity_attempt: [resource_attempt: [:revision]])
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """

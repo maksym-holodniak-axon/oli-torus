@@ -166,7 +166,7 @@ defmodule OliWeb.PageDeliveryView do
     |> Base.encode64()
   end
 
-  # We only encode activity attempts for basic pages, when a full attempt hiearchy is present here as
+  # We only encode activity attempts for basic pages, when a full attempt hierarchy is present here as
   # the second argument. These entries will be in the shape
   # of two element tuples.
   defp encode_attempt(registered_activity_slug_map, {activity_attempt, part_attempts_map}) do

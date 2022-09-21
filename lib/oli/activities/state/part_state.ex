@@ -41,19 +41,27 @@ defmodule Oli.Activities.State.PartState do
   ]
 
   def from_attempt(
-        %PartAttempt{} = attempt,
+        %PartAttempt{
+          activity_attempt:
+            %ActivityAttempt{
+              resource_attempt:
+                %ResourceAttempt{
+                  revision: resource_revision
+                } = resource_attempt
+            } = activity_attempt
+        } = attempt,
         %Part{} = part
       ) do
-    # TODO: consider refactoring this to be more efficient than a preload on every call
-    %PartAttempt{
-      activity_attempt:
-        %ActivityAttempt{
-          resource_attempt:
-            %ResourceAttempt{
-              revision: resource_revision
-            } = resource_attempt
-        } = activity_attempt
-    } = Repo.preload(attempt, activity_attempt: [resource_attempt: [:revision]])
+    # # TODO: consider refactoring this to be more efficient than a preload on every call
+    # %PartAttempt{
+    #   activity_attempt:
+    #     %ActivityAttempt{
+    #       resource_attempt:
+    #         %ResourceAttempt{
+    #           revision: resource_revision
+    #         } = resource_attempt
+    #     } = activity_attempt
+    # } = Repo.preload(attempt, activity_attempt: [resource_attempt: [:revision]])
 
     # From the ids of hints displayed in the attempt, look up
     # the hint content from the part

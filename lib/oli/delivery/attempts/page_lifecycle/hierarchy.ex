@@ -479,23 +479,49 @@ defmodule Oli.Delivery.Attempts.PageLifecycle.Hierarchy do
   end
 
   def get_latest_attempts(resource_attempt_id, activity_ids) do
+    # Repo.all(
+    #   from(aa1 in ActivityAttempt,
+    #     join: r in assoc(aa1, :revision),
+    #     left_join: aa2 in ActivityAttempt,
+    #     on:
+    #       aa1.resource_id == aa2.resource_id and aa1.id < aa2.id and
+    #         aa1.resource_attempt_id == aa2.resource_attempt_id,
+    #     join: pa1 in PartAttempt,
+    #     on: aa1.id == pa1.activity_attempt_id,
+    #     left_join: pa2 in PartAttempt,
+    #     on:
+    #       aa1.id == pa2.activity_attempt_id and pa1.part_id == pa2.part_id and pa1.id < pa2.id and
+    #         pa1.activity_attempt_id == pa2.activity_attempt_id,
+    #     where:
+    #       aa1.resource_id in ^activity_ids and
+    #         aa1.resource_attempt_id == ^resource_attempt_id and is_nil(aa2.id) and is_nil(pa2.id),
+    #     preload: [revision: r],
+    #     select: {pa1, aa1}
+    #   )
+    # )
+    # |> results_to_activity_map
+
     Repo.all(
-      from(aa1 in ActivityAttempt,
-        join: r in assoc(aa1, :revision),
+      from(pa1 in PartAttempt,
+        join: aa1 in ActivityAttempt,
+        on: aa1.id == pa1.activity_attempt_id,
         left_join: aa2 in ActivityAttempt,
         on:
           aa1.resource_id == aa2.resource_id and aa1.id < aa2.id and
             aa1.resource_attempt_id == aa2.resource_attempt_id,
-        join: pa1 in PartAttempt,
-        on: aa1.id == pa1.activity_attempt_id,
+        join: r in assoc(aa1, :revision),
         left_join: pa2 in PartAttempt,
         on:
           aa1.id == pa2.activity_attempt_id and pa1.part_id == pa2.part_id and pa1.id < pa2.id and
             pa1.activity_attempt_id == pa2.activity_attempt_id,
+        left_join: ra in ResourceAttempt,
+        on: aa1.resource_attempt_id == ra.id,
+        left_join: rev in Revision,
+        on: ra.revision_id == rev.id,
         where:
           aa1.resource_id in ^activity_ids and
             aa1.resource_attempt_id == ^resource_attempt_id and is_nil(aa2.id) and is_nil(pa2.id),
-        preload: [revision: r],
+        preload: [activity_attempt: {aa1, resource_attempt: {ra, revision: rev}, revision: r}],
         select: {pa1, aa1}
       )
     )
