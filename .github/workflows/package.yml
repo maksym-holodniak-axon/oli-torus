@@ -77,14 +77,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags:
-            - olisimon/oli-torus:latest
-            - olisimon/oli-torus:${{ steps.info.outputs.app_version }}
-            - olisimon/oli-torus:${{ steps.info.outputs.sha_short }}
-          build-args:
-            - ELIXIR_VERSION=1.13
-            - NODE_VERSION=15.14.0
-            - RELEASE_SHA=${{ steps.info.outputs.sha_short }}
+          tags: olisimon/oli-torus:latest,olisimon/oli-torus:${{ steps.info.outputs.app_version }},olisimon/oli-torus:${{ steps.info.outputs.sha_short }}
+          build-args: ELIXIR_VERSION=1.13,NODE_VERSION=15.14.0,RELEASE_SHA=${{ steps.info.outputs.sha_short }}
 
   docs:
     runs-on: ubuntu-latest
