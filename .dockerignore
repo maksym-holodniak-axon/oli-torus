@@ -32,7 +32,11 @@ npm-debug.log
 # we ignore priv/static. You may want to comment
 # this depending on your deployment strategy.
 /priv/static/
+
+# Misc.
 oli.env
 postgres.env
 /assets/test-results/
 /assets/coverage/
+test
+package-lock.json
