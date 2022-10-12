@@ -73,7 +73,7 @@ jobs:
           username: ${{ secrets.SIMON_DOCKERHUB_USERNAME }}
           password: ${{ secrets.SIMON_DOCKERHUB_TOKEN }}
 
-      -  name: 🔨⬆️ Build and push
+      - name: 🔨⬆️ Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
