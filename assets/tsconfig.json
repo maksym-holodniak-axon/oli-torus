@@ -6,6 +6,7 @@
     "target": "es6",
     "jsx": "preserve",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,

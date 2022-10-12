@@ -1,0 +1,27 @@
+{
+  "title": "Choice by Attempt",
+  "data": {
+    "values": []
+  },
+  "width": 500,
+  "height": 350,
+  "mark": {
+    "type": "circle",
+    "opacity": 0.8,
+    "stroke": "black",
+    "strokeWidth": 1
+  },
+  "encoding": {
+    "x": {
+      "field": "aNum",
+      "type": "ordinal",
+      "axis": { "grid": false }
+    },
+    "y": { "field": "choice", "type": "nominal", "axis": { "title": "" } },
+    "size": {
+      "aggregate": "count",
+      "title": "Choices by Attempt"
+    },
+    "color": { "field": "choice", "type": "nominal", "legend": null }
+  }
+}

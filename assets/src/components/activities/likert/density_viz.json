@@ -1,0 +1,16 @@
+{
+  "title": "Evaluation",
+  "height": "300",
+  "data": {
+    "values": []
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "choice",
+      "type": "nominal"
+    },
+    "y": { "aggregate": "count" },
+    "tooltip": [{ "field": "choiceText", "type": "nominal", "title": "Choice" }]
+  }
+}

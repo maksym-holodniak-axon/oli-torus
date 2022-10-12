@@ -26,14 +26,28 @@ import { VariableActions } from '../common/variables/variableActions';
 import * as ActivityTypes from '../types';
 import { MCSchema } from './schema';
 import { Explanation } from '../common/explanation/ExplanationAuthoring';
+import { AnalyticsView } from '../common/analytics/AnalyticsView';
+import { VizDataSource } from 'data/persistence/viz';
+import { TopLevelSpec } from 'vega-lite';
+import { transform } from './data_transform';
 
 const store = configureStore();
+import choicesBarViz from './choices_bar_viz.json';
+import byRevisionViz from './by_revision_viz.json';
+import averageHints from './average_hints_viz.json';
+import byAttempt from './by_attempt_viz.json';
 
 const MultipleChoice: React.FC = () => {
-  const { dispatch, model, editMode, projectSlug } = useAuthoringElementContext<MCSchema>();
+  const { dispatch, model, editMode, projectSlug, authoringContext } =
+    useAuthoringElementContext<MCSchema>();
   const writerContext = defaultWriterContext({
     projectSlug: projectSlug,
   });
+
+  const dataSource = {
+    type: 'ByProject',
+    projectSlug,
+  } as VizDataSource;
 
   return (
     <>
@@ -92,6 +106,21 @@ const MultipleChoice: React.FC = () => {
             editMode={editMode}
             model={model}
             onEdit={(t) => dispatch(VariableActions.onUpdateTransformations(t))}
+          />
+        </TabbedNavigation.Tab>
+
+        <TabbedNavigation.Tab label="Analytics">
+          <AnalyticsView
+            vizDataSource={dataSource}
+            vizzes={[
+              choicesBarViz as TopLevelSpec,
+              byRevisionViz as TopLevelSpec,
+              averageHints as TopLevelSpec,
+              byAttempt as TopLevelSpec,
+            ]}
+            model={model}
+            activityId={authoringContext.activityId}
+            transform={transform}
           />
         </TabbedNavigation.Tab>
 

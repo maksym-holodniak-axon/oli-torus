@@ -1,0 +1,18 @@
+{
+  "title": "By Revision",
+  "height": "300",
+  "data": {
+    "values": []
+  },
+  "mark": "bar",
+  "encoding": {
+    "column": { "field": "choice", "type": "nominal", "header": { "orient": "bottom" } },
+    "x": {
+      "field": "revId",
+      "axis": null
+    },
+    "y": { "aggregate": "count" },
+    "tooltip": [{ "field": "choiceText", "type": "nominal", "title": "Choice" }],
+    "color": { "field": "revId" }
+  }
+}

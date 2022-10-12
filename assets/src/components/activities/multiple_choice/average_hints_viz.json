@@ -1,0 +1,16 @@
+{
+  "title": "Mean Hints By Eventual Choice",
+  "height": "300",
+  "data": {
+    "values": []
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "choice",
+      "type": "nominal"
+    },
+    "y": { "aggregate": "mean", "field": "hints" },
+    "tooltip": [{ "field": "choiceText", "type": "nominal", "title": "Choice" }]
+  }
+}

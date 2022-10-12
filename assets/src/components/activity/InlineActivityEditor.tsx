@@ -14,6 +14,7 @@ import styles from './InlineActivityEditor.modules.scss';
 import { classNames } from 'utils/classNames';
 
 export interface ActivityEditorProps extends ActivityEditContext {
+  activityId: number;
   editMode: boolean;
   projectSlug: string;
   allObjectives: Objective[];
@@ -135,7 +136,7 @@ export class InlineActivityEditor extends React.Component<
   }
 
   render() {
-    const { authoringElement, contentBreaksExist } = this.props;
+    const { authoringElement, contentBreaksExist, activityId } = this.props;
 
     const onTitleEdit = (title: string) => {
       this.update({ title });
@@ -146,7 +147,7 @@ export class InlineActivityEditor extends React.Component<
       model: JSON.stringify(this.props.model),
       editmode: new Boolean(this.props.editMode).toString(),
       projectslug: this.props.projectSlug,
-      authoringcontext: JSON.stringify({ contentBreaksExist }),
+      authoringcontext: JSON.stringify({ contentBreaksExist, activityId }),
     };
 
     const parts = valueOr(this.props.model.authoring.parts, []);

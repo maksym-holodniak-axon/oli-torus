@@ -27,8 +27,16 @@ import { VariableActions } from '../common/variables/variableActions';
 import { useAuthoringElementContext, AuthoringElementProvider } from '../AuthoringElementProvider';
 import { Explanation } from '../common/explanation/ExplanationAuthoring';
 
+import { AnalyticsView } from '../common/analytics/AnalyticsView';
+import { VizDataSource } from 'data/persistence/viz';
+import { TopLevelSpec } from 'vega-lite';
+import { transform } from './data_transform';
+
+import densityViz from './density_viz.json';
+import { toSimpleText } from 'components/editing/slateUtils';
+
 const Likert = (props: AuthoringElementProps<LikertModelSchema>) => {
-  const { dispatch, model, editMode, projectSlug } =
+  const { dispatch, model, editMode, projectSlug, authoringContext } =
     useAuthoringElementContext<LikertModelSchema>();
 
   // for now, we always select the first part for editing correct/feedback/hints.
@@ -37,6 +45,15 @@ const Likert = (props: AuthoringElementProps<LikertModelSchema>) => {
   const writerContext = defaultWriterContext({
     projectSlug: projectSlug,
   });
+
+  const dataSource = {
+    type: 'ByProject',
+    projectSlug,
+  } as VizDataSource;
+
+  const partViz = React.useRef(
+    Object.assign({}, densityViz, { title: toSimpleText(model.items[0].content) }),
+  );
 
   return (
     <React.Fragment>
@@ -117,6 +134,15 @@ const Likert = (props: AuthoringElementProps<LikertModelSchema>) => {
             editMode={editMode}
             model={model}
             onEdit={(t) => dispatch(VariableActions.onUpdateTransformations(t))}
+          />
+        </TabbedNavigation.Tab>
+        <TabbedNavigation.Tab label="Analytics">
+          <AnalyticsView
+            vizDataSource={dataSource}
+            vizzes={[partViz.current as TopLevelSpec]}
+            model={model}
+            activityId={authoringContext.activityId}
+            transform={transform}
           />
         </TabbedNavigation.Tab>
       </TabbedNavigation.Tabs>

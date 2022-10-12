@@ -575,6 +575,13 @@ defmodule OliWeb.Router do
     post("/s/failure", PaymentProviders.StripeController, :failure)
   end
 
+  scope "/api/v1/viz", OliWeb do
+    pipe_through([:api])
+
+    # String payment intent creation
+    post("/", Api.VizController, :by_activity)
+  end
+
   # User State Service, instrinsic state
   scope "/api/v1/state/course/:section_slug/activity_attempt", OliWeb do
     pipe_through([:api, :delivery_protected])
