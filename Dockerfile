@@ -1,18 +1,22 @@
 ARG ELIXIR_VERSION
-ARG NODE_VERSION
 ARG RELEASE_SHA
 
 ### STAGE 1: Build a Mix.Release of the application
-FROM elixir:${ELIXIR_VERSION}-alpine AS phx-builder
+FROM elixir:${ELIXIR_VERSION} AS phx-builder
 
 WORKDIR /app
 
 ENV MIX_ENV=prod
 ENV SHA=RELEASE_SHA
 
+# install nodejs
+RUN apt update -y && apt install -y curl build-essential
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt update -y && apt install -y nodejs
+RUN npm install -g yarn
+
 RUN mix local.hex --force
 RUN mix local.rebar --force
-RUN apk update && apk add --no-cache build-base yarn
 
 # Elixir deps
 ADD mix.exs mix.lock ./
@@ -33,18 +37,8 @@ RUN mix do compile, phx.digest
 # Create a Mix.Release of the application
 RUN mix release
 
-### STAGE 2: Use node alpine image to source prebuilt binaries
-FROM node:${NODE_VERSION}-alpine AS node
-
-### STAGE 3: Create a smaller deployment image
-FROM elixir:${ELIXIR_VERSION}-alpine
-
-# Copy over prebuilt NodeJS binaries
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
+### STAGE 2: Create a smaller deployment image
+FROM elixir:${ELIXIR_VERSION}
 
 ENV MIX_ENV=prod
 
@@ -56,22 +50,12 @@ ENV MIX_ENV=prod
 ENV USER="phoenix"
 ENV HOME=/home/"${USER}"
 ENV APP_DIR="/oli"
-
 WORKDIR ${APP_DIR}
 
-RUN apk update && apk add --no-cache curl
-
-RUN \
-  addgroup \
-  -g 1000 \
-  -S "${USER}" && \
-  adduser \
-  -s /bin/sh \
-  -u 1000 \
-  -G "${USER}" \
-  -h "${HOME}" \
-  -D "${USER}" && \
-  chown "${USER}:${USER}" ${APP_DIR}
+# install nodejs
+RUN apt update -y && apt install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt update -y && apt install -y nodejs
 
 # Copy the files necessary to run the application
 COPY --from=phx-builder --chown="${USER}":"${USER}" /app/_build/prod/rel/oli ./
