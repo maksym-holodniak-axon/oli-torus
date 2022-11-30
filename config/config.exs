@@ -181,7 +181,8 @@ config :logger, :console,
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
+config :phoenix, :json_library, Jsonrs
+config :postgrex, :json_library, Jsonrs
 
 if Mix.env() == :dev do
   config :mix_test_watch,
