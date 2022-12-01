@@ -833,7 +833,9 @@ defmodule OliWeb.Router do
       as: :instructor_review
     )
 
-    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor, as: :collab_spaces_index)
+    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor,
+      as: :collab_spaces_index
+    )
   end
 
   scope "/api/v1/state/course/:section_slug/activity_attempt", OliWeb do
@@ -1126,6 +1128,9 @@ defmodule OliWeb.Router do
       ])
 
       get("/flame_graphs", DevController, :flame_graphs)
+
+      get("/json_tests/jason", DevController, :json_jason)
+      get("/json_tests/nif", DevController, :json_nif)
     end
   end
 end
