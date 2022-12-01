@@ -107,6 +107,10 @@ config :oli, :stripe_provider,
   public_secret: System.get_env("STRIPE_PUBLIC_SECRET"),
   private_secret: System.get_env("STRIPE_PRIVATE_SECRET")
 
+config :oli, :cashnet_provider,
+  store_number: System.get_env("CASHNET_STORE_NUMBER"),
+  checkout_url: System.get_env("CASHNET_CHECKOUT_URL")
+
 # Configure database
 config :oli, Oli.Repo, migration_timestamps: [type: :timestamptz]
 
