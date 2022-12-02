@@ -1,0 +1,33 @@
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+    <tr>
+        <td style="background-color: #ffffff; padding: 20px 10px;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                    <td colspan="2">
+                        <h1>Payment Receipt</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td>First name</td>
+                    <td><%= @response.fname %></td>
+                </tr>
+                <tr>
+                    <td>Last name</td>
+                    <td><%= @response.lname %></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><%= @response.email %></td>
+                </tr>
+                <tr>
+                    <td>Course Section</td>
+                    <td><%= @response.itemname1 %></td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td><%= @response.amount1 %></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

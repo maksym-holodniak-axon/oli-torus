@@ -231,6 +231,7 @@ button:disabled {
       <input type="hidden" name="qty1" value="1"/>
       <input type="hidden" name="amount1" value="<%= @cost %>"/>
 
+      <button type="submit">Proceed to Payment</button>
     </form>
   </div>
 </div>

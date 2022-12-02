@@ -49,6 +49,19 @@ defmodule OliWeb.PaymentProviders.CashnetController do
     end
   end
 
+  defp send_receipt_email(user, response) do
+    email =
+      Oli.Email.payment_receipt_email(
+        user.email,
+        :payment_receipt,
+        %{
+          response: response
+        }
+      )
+
+    Oli.Mailer.deliver_now(email)
+  end
+
   defp safe_get(item, default_value) do
     case item do
       nil -> default_value
@@ -58,7 +71,11 @@ defmodule OliWeb.PaymentProviders.CashnetController do
 
   def success(conn, result) do
     case Cashnet.finalize_payment(result) do
-      {:ok, section} ->
+      {:ok, section, payment} ->
+
+        user = Oli.Accounts.get_user!(payment.pending_user_id)
+        send_receipt_email(user, result)
+
         conn
         |> redirect(to: Routes.page_delivery_path(conn, :index, section.slug))
       {:error, reason} ->
@@ -75,10 +92,12 @@ defmodule OliWeb.PaymentProviders.CashnetController do
       params: params
     })
 
+    Cashnet.capture_failure(params)
+
     conn
     |> Phoenix.Controller.put_view(OliWeb.PaymentProviders.CashnetView)
     |> render("error.html",
-      response: Map.get(params, "respmessage")
+      response: Map.get(params, "respmessage", "There was an unknown failure")
     )
   end
 

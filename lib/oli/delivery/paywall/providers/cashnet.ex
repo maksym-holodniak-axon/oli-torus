@@ -4,7 +4,7 @@ defmodule Oli.Delivery.Paywall.Providers.Cashnet do
   alias Oli.Accounts.User
 
   @doc """
-  Creates a Cashnet pending payment
+  Creates a Cashnet pending payment.
   """
   @spec create_intent(%Section{}, %User{}) :: {:ok, any} | {:error, any}
   def create_intent(section, user) do
@@ -57,7 +57,7 @@ defmodule Oli.Delivery.Paywall.Providers.Cashnet do
                 application_date: DateTime.utc_now(),
                 provider_payload: response
               }) do
-                {:ok, _} -> {:ok, section}
+                {:ok, payment} -> {:ok, section, payment}
                 _ -> {:error, "Could not finalize payment"}
               end
             else
@@ -70,6 +70,24 @@ defmodule Oli.Delivery.Paywall.Providers.Cashnet do
         {:error, "Payment already finalized"}
     end
 
+  end
+
+  @doc """
+  Capture a payment failure.
+  """
+  def capture_failure(response) do
+
+    case response do
+      %{"ref1val1" => provider_id} ->
+        case Oli.Delivery.Paywall.get_provider_payment(:cashnet, provider_id) do
+          nil ->
+            {:error, "Payment does not exist"}
+
+          payment -> Oli.Delivery.Paywall.update_payment(payment, %{provider_payload: response})
+
+        end
+      _ -> {:error, :not_found}
+    end
   end
 
 end

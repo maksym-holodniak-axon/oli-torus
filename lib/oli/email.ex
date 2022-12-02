@@ -2,6 +2,15 @@ defmodule Oli.Email do
   import Bamboo.Email
   use Bamboo.Phoenix, view: OliWeb.EmailView
 
+  @spec receipt_email(String.t(), atom(), map()) :: Bamboo.Email.t()
+  def receipt_email(recipient_email, view, assigns) do
+    base_email()
+    |> to(recipient_email)
+    |> subject("Your Payment Receipt")
+    |> render(view, assigns)
+    |> html_text_body()
+  end
+
   @spec invitation_email(String.t(), atom(), map()) :: Bamboo.Email.t()
   def invitation_email(recipient_email, view, assigns) do
     base_email()
