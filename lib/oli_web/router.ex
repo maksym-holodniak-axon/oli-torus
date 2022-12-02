@@ -585,6 +585,10 @@ defmodule OliWeb.Router do
     post("/s/create-payment-intent", PaymentProviders.StripeController, :init_intent)
     post("/s/success", PaymentProviders.StripeController, :success)
     post("/s/failure", PaymentProviders.StripeController, :failure)
+
+    # Cashnet
+    post("/c/success", PaymentProviders.CashnetController, :success)
+    post("/c/failure", PaymentProviders.CashnetController, :failure)
   end
 
   # User State Service, instrinsic state
@@ -833,7 +837,9 @@ defmodule OliWeb.Router do
       as: :instructor_review
     )
 
-    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor, as: :collab_spaces_index)
+    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor,
+      as: :collab_spaces_index
+    )
   end
 
   scope "/api/v1/state/course/:section_slug/activity_attempt", OliWeb do

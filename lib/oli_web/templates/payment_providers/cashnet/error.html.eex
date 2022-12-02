@@ -191,46 +191,8 @@ button:disabled {
 
 <div class="payment-content">
   <div class="summary">
-    <label>Course Section</label>
-    <input type="text" disabled value="<%= @section.title %>"/>
+    <h3>A problem was encountered</h3>
 
-    <label>User</label>
-    <input type="text" disabled value="<%= @user_name %>"/>
-
-    <label>Amount</label>
-    <input type="text" disabled value="<%= @cost %>"/>
-
-    <hr class="mt-3 mb-3"/>
-
-    <form action="<%= @settings.checkout_url %>" method="post" id="cmupayment" target="_blank">
-      <input type="hidden" name="virtual" value="CMU<%= @settings.store_number %>"/>
-      <input type="hidden" name="signouturl" value="<%= @success_url %>"/>
-      <input type="hidden" name="incompletesignouturl" value="<%= @failure_url %>"/>
-      <input type="hidden" name="ref1type1" value="<%= @settings.store_number %>-payment_ref"/>
-      <input type="hidden" name="ref1val1" value="<%= @payment.provider_id %>"/>
-
-      <input type="hidden" name="eusername" value="<%= @user.id %>"/>
-      <input type="hidden" name="fname" value="<%= @first_name %>"/>
-      <input type="hidden" name="lname" value="<%= @last_name %>"/>
-      <input type="hidden" name="email" value="<%= @user.email %>"/>
-      <input type="hidden" name="ref2type1" value="<%= @settings.store_number %>-admit_code"/>
-      <input type="hidden" name="ref2val1" value="<%= @section.slug %>"/>
-
-      <input type="hidden" name="ref3type1" value="<%= @settings.store_number %>-fname"/>
-      <input type="hidden" name="ref3val1" value="<%= @first_name %>"/>
-      <input type="hidden" name="ref4type1" value="<%= @settings.store_number %>-lname"/>
-      <input type="hidden" name="ref4val1" value="<%= @last_name %>"/>
-      <input type="hidden" name="ref5type1" value="<%= @settings.store_number %>-email"/>
-      <input type="hidden" name="ref5val1" value="<%= @user.email %>"/>
-      <input type="hidden" name="ref6type1" value="<%= @settings.store_number %>-title"/>
-      <input type="hidden" name="ref6val1" value="<%= @section.title %>"/>
-
-      <input type="hidden" name="itemcode1" value="<%= @settings.store_number %>-COURSE"/>
-      <input type="hidden" name="itemname1" value="<%= @section.title %>"/>
-      <input type="hidden" name="desc1" value="Title: <%= @section.title %>"/>
-      <input type="hidden" name="qty1" value="1"/>
-      <input type="hidden" name="amount1" value="<%= @cost %>"/>
-
-    </form>
+    <p><%= @response %></p>
   </div>
 </div>
