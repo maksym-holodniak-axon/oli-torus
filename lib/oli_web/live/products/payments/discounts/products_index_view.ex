@@ -1,5 +1,5 @@
 defmodule OliWeb.Products.Payments.Discounts.ProductsIndexView do
-  use Surface.LiveView, layout: {OliWeb.LayoutView, "live.html"}
+  use Surface.LiveView, layout: {OliWeb.LayoutView, :live}
   use OliWeb.Common.SortableTable.TableHandlers
 
   alias Oli.Delivery.{Sections, Paywall}
@@ -24,7 +24,9 @@ defmodule OliWeb.Products.Payments.Discounts.ProductsIndexView do
   @table_push_patch_path &__MODULE__.live_path/2
 
   def filter_rows(socket, _, _), do: socket.assigns.discounts
-  def live_path(socket, params), do: Routes.live_path(socket, __MODULE__, socket.assigns.product.slug, params)
+
+  def live_path(socket, params),
+    do: Routes.live_path(socket, __MODULE__, socket.assigns.product.slug, params)
 
   def set_breadcrumbs(product) do
     OliWeb.Products.DetailsView.set_breadcrumbs(product) ++
@@ -44,16 +46,21 @@ defmodule OliWeb.Products.Payments.Discounts.ProductsIndexView do
 
         {:ok, table_model} = TableModel.new(discounts, context)
 
-        {:ok, assign(socket,
-          context: context,
-          breadcrumbs: set_breadcrumbs(product),
-          discounts: discounts,
-          table_model: table_model,
-          total_count: length(discounts),
-          product: product
-        )}
+        {:ok,
+         assign(socket,
+           context: context,
+           breadcrumbs: set_breadcrumbs(product),
+           discounts: discounts,
+           table_model: table_model,
+           total_count: length(discounts),
+           product: product
+         )}
 
-      _ -> {:ok, Phoenix.LiveView.redirect(socket, to: Routes.static_page_path(OliWeb.Endpoint, :not_found))}
+      _ ->
+        {:ok,
+         Phoenix.LiveView.redirect(socket,
+           to: Routes.static_page_path(OliWeb.Endpoint, :not_found)
+         )}
     end
   end
 
@@ -91,9 +98,9 @@ defmodule OliWeb.Products.Payments.Discounts.ProductsIndexView do
         {:ok, table_model} = TableModel.new(discounts, socket.assigns.context)
 
         {:noreply,
-          socket
-          |> put_flash(:info, "Discount successfully removed.")
-          |> assign(discounts: discounts, table_model: table_model, total_count: length(discounts))}
+         socket
+         |> put_flash(:info, "Discount successfully removed.")
+         |> assign(discounts: discounts, table_model: table_model, total_count: length(discounts))}
 
       {:error, _error} ->
         {:noreply, put_flash(socket, :error, "Discount couldn't be removed.")}

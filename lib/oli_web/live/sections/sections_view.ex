@@ -1,5 +1,5 @@
 defmodule OliWeb.Sections.SectionsView do
-  use Surface.LiveView, layout: {OliWeb.LayoutView, "live.html"}
+  use Surface.LiveView, layout: {OliWeb.LayoutView, :live}
 
   import OliWeb.Common.Params
   import OliWeb.DelegatedEvents
@@ -169,8 +169,11 @@ defmodule OliWeb.Sections.SectionsView do
     do: patch_with(socket, %{filter_type: type})
 
   def handle_event(event, params, socket),
-    do: delegate_to({event, params, socket, &__MODULE__.patch_with/2},
-        [&TextSearch.handle_delegated/4, &PagedTable.handle_delegated/4])
+    do:
+      delegate_to(
+        {event, params, socket, &__MODULE__.patch_with/2},
+        [&TextSearch.handle_delegated/4, &PagedTable.handle_delegated/4]
+      )
 
   defp determine_total(projects) do
     case projects do

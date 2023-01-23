@@ -1,12 +1,21 @@
 defmodule OliWeb.Sections.EditView do
-  use Surface.LiveView, layout: {OliWeb.LayoutView, "live.html"}
+  use Surface.LiveView, layout: {OliWeb.LayoutView, :live}
 
   alias Oli.Branding
   alias Oli.Delivery.Sections
   alias OliWeb.Common.{Breadcrumb, SessionContext, FormatDateTime, CustomLabelsForm}
   alias OliWeb.Common.Properties.{Groups, Group}
   alias OliWeb.Router.Helpers, as: Routes
-  alias OliWeb.Sections.{LtiSettings, MainDetails, Mount, OpenFreeSettings, PaywallSettings, ContentSettings}
+
+  alias OliWeb.Sections.{
+    LtiSettings,
+    MainDetails,
+    Mount,
+    OpenFreeSettings,
+    PaywallSettings,
+    ContentSettings
+  }
+
   alias Surface.Components.Form
   alias Oli.Branding.CustomLabels
 
@@ -42,10 +51,13 @@ defmodule OliWeb.Sections.EditView do
         available_brands =
           Branding.list_brands()
           |> Enum.map(fn brand -> {brand.name, brand.id} end)
-          labels = case section.customizations do
+
+        labels =
+          case section.customizations do
             nil -> Map.from_struct(CustomLabels.default())
             val -> Map.from_struct(val)
           end
+
         {:ok,
          assign(socket,
            context: SessionContext.init(session),
@@ -107,9 +119,16 @@ defmodule OliWeb.Sections.EditView do
   def handle_event("save_labels", %{"view" => params}, socket) do
     socket = clear_flash(socket)
 
-    params = Map.merge(%{"unit" => "Unit", "module" => "Module", "section" => "Section"}, params, fn _k, v1, v2 ->
-      if v2 == nil || String.length(String.trim v2) == 0 do v1 else v2 end
-    end)
+    params =
+      Map.merge(%{"unit" => "Unit", "module" => "Module", "section" => "Section"}, params, fn _k,
+                                                                                              v1,
+                                                                                              v2 ->
+        if v2 == nil || String.length(String.trim(v2)) == 0 do
+          v1
+        else
+          v2
+        end
+      end)
 
     case Sections.update_section(socket.assigns.section, %{customizations: params}) do
       {:ok, section} ->

@@ -1,5 +1,5 @@
 defmodule OliWeb.Grades.ObserveGradeUpdatesView do
-  use Surface.LiveView, layout: {OliWeb.LayoutView, "live.html"}
+  use Surface.LiveView, layout: {OliWeb.LayoutView, :live}
 
   alias OliWeb.Common.{Breadcrumb, PagedTable}
   alias Oli.Delivery.Attempts.Core
@@ -98,10 +98,10 @@ defmodule OliWeb.Grades.ObserveGradeUpdatesView do
     {:ok, table_model} = ObserveTableModel.new(updates)
 
     {:noreply,
-      assign(socket,
-        updates: updates,
-        table_model: table_model,
-        total_count: Enum.count(updates)
-      )}
+     assign(socket,
+       updates: updates,
+       table_model: table_model,
+       total_count: Enum.count(updates)
+     )}
   end
 end

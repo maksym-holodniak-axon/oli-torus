@@ -1,5 +1,5 @@
 defmodule OliWeb.Products.ProductsView do
-  use Surface.LiveView, layout: {OliWeb.LayoutView, "live.html"}
+  use Surface.LiveView, layout: {OliWeb.LayoutView, :live}
   alias Oli.Repo
   alias OliWeb.Common.{Breadcrumb, Filter, Listing, SessionContext}
   alias OliWeb.Products.Create
@@ -72,7 +72,11 @@ defmodule OliWeb.Products.ProductsView do
       ]
   end
 
-  def mount(%{"project_id" => project_slug}, %{"current_author_id" => author_id} = session, socket) do
+  def mount(
+        %{"project_id" => project_slug},
+        %{"current_author_id" => author_id} = session,
+        socket
+      ) do
     author = Repo.get(Author, author_id)
     project = Course.get_project_by_slug(project_slug)
     products = Blueprint.list_for_project(project)
@@ -146,11 +150,17 @@ defmodule OliWeb.Products.ProductsView do
   end
 
   def handle_event("create", _, socket) do
-    customizations = case socket.assigns.project.customizations do
-      nil -> nil
-      labels -> Map.from_struct(labels)
-    end
-    case Blueprint.create_blueprint(socket.assigns.project.slug, socket.assigns.creation_title, customizations) do
+    customizations =
+      case socket.assigns.project.customizations do
+        nil -> nil
+        labels -> Map.from_struct(labels)
+      end
+
+    case Blueprint.create_blueprint(
+           socket.assigns.project.slug,
+           socket.assigns.creation_title,
+           customizations
+         ) do
       {:ok, blueprint} ->
         {:noreply,
          socket
