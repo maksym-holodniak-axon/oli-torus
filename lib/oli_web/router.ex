@@ -794,6 +794,7 @@ defmodule OliWeb.Router do
 
     live("/:section_slug", Sections.OverviewView)
 
+    get("/:section_slug/schedule", PageDeliveryController, :schedule)
     live("/:section_slug/grades/lms", Grades.GradesLive)
     live("/:section_slug/grades/lms_grade_updates", Grades.BrowseUpdatesView)
     live("/:section_slug/grades/failed", Grades.FailedGradeSyncLive)
@@ -832,7 +833,9 @@ defmodule OliWeb.Router do
       as: :instructor_review
     )
 
-    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor, as: :collab_spaces_index)
+    live("/:section_slug/collaborative_spaces", CollaborationLive.IndexView, :instructor,
+      as: :collab_spaces_index
+    )
   end
 
   scope "/api/v1/state/course/:section_slug/activity_attempt", OliWeb do
