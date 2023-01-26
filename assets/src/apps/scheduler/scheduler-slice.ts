@@ -59,6 +59,7 @@ interface InitPayload {
 interface MovePayload {
   itemId: string;
   startDate: DateWithoutTime;
+  endDate: DateWithoutTime;
 }
 
 const findItem = (root: HierarchyItem | null, itemId: string): HierarchyItem | null => {
@@ -85,16 +86,10 @@ const schedulerSlice = createSlice({
     },
     moveScheduleItem(state, action: PayloadAction<MovePayload>) {
       const mutableItem = findItem(state.schedule, action.payload.itemId);
-      console.info('FOUND', mutableItem?.id, action.payload.itemId);
 
-      if (mutableItem && mutableItem.start_date && mutableItem.end_date) {
-        const duration = Math.abs(
-          mutableItem.end_date.getDaysSinceEpoch() - mutableItem.start_date.getDaysSinceEpoch(),
-        );
+      if (mutableItem) {
         mutableItem.start_date = action.payload.startDate;
-        mutableItem.end_date = new DateWithoutTime(
-          action.payload.startDate.getDaysSinceEpoch() + duration,
-        );
+        mutableItem.end_date = action.payload.endDate;
       }
     },
     resetSchedule(state) {
