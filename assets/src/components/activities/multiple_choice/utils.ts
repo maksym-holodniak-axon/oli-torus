@@ -6,10 +6,13 @@ import {
   makeHint,
   makePart,
   makeStem,
+  makeResponse,
   makeTransformation,
   Transform,
 } from 'components/activities/types';
 import { Choices } from 'data/activities/model/choices';
+
+import { containsRule, eqRule, equalsRule, matchRule } from 'data/activities/model/rules';
 import { getCorrectResponse, Responses } from 'data/activities/model/responses';
 import { Maybe } from 'tsmonad';
 
@@ -25,6 +28,43 @@ export const defaultMCModel: () => MCSchema = () => {
       parts: [
         makePart(
           Responses.forMultipleChoice(choiceA.id),
+          [makeHint(''), makeHint(''), makeHint('')],
+          '1',
+        ),
+      ],
+      targeted: [],
+      transformations: [makeTransformation('choices', Transform.shuffle, true)],
+      previewText: '',
+    },
+  };
+};
+
+export function build(q: any):  MCSchema {
+
+  const choices = q.options.map((o: any) => {
+    if (o.text !== undefined) {
+      return makeChoice(o.text);
+    }
+    return makeChoice(o.option);
+  });
+
+  let i = 0;
+  while (i < q.options.length) {
+    if (q.options[i].isCorrect || q.options[i].correct) break;
+    i++;
+  }
+
+  return {
+    stem: makeStem(q.question),
+    choices,
+    authoring: {
+      version: 2,
+      parts: [
+        makePart(
+          [
+            makeResponse(matchRule(choices[i].id), 1, 'Correct.'),
+            makeResponse(matchRule('.*'), 0, 'Incorrect.'),
+          ],
           [makeHint(''), makeHint(''), makeHint('')],
           '1',
         ),

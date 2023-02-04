@@ -70,8 +70,10 @@ export const Editors = (props: EditorsProps) => {
   const canRemove = editMode;
 
   const contentBreaksExist = content.model.some((v: ResourceContent) => v.type === 'break');
-
+  let lastContent : ResourceContent | null = null ;
   const editors = content.model.map((contentItem, index) => {
+
+
     const onEdit = (contentItem: ResourceContent) =>
       props.onEdit(content.updateContentItem(contentItem.id, contentItem));
 
@@ -103,7 +105,7 @@ export const Editors = (props: EditorsProps) => {
       onRemove,
     });
 
-    return (
+    const result = (
       <div
         key={contentItem.id}
         className={classNames('resource-block-editor-and-controls', contentItem.id)}
@@ -111,6 +113,7 @@ export const Editors = (props: EditorsProps) => {
         <AddResource
           index={[index]}
           parents={[]}
+          previousContent={lastContent}
           editMode={editMode}
           editorMap={editorMap}
           resourceContext={props.resourceContext}
@@ -129,6 +132,8 @@ export const Editors = (props: EditorsProps) => {
         </div>
       </div>
     );
+    lastContent = contentItem;
+    return result;
   });
 
   return (
@@ -138,6 +143,7 @@ export const Editors = (props: EditorsProps) => {
       <AddResource
         index={[content.model.size]}
         parents={[]}
+        previousContent={lastContent}
         editMode={editMode}
         isLast
         editorMap={editorMap}

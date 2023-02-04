@@ -12,6 +12,7 @@ export type AddResourceProps = {
   index: number[];
   isLast?: boolean;
   parents: ResourceContent[];
+  previousContent: ResourceContent | null;
   editMode: boolean;
   editorMap: ActivityEditorMap;
   resourceContext: ResourceContext;

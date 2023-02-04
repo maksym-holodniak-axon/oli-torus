@@ -1119,6 +1119,12 @@ defmodule OliWeb.Router do
       post("/rules", Api.RulesEngineController, :execute)
     end
 
+    scope "/api/v1/openai", OliWeb do
+      pipe_through([:api])
+
+      post("/", Api.OpenAIController, :prompt)
+    end
+
     scope "/dev", OliWeb do
       pipe_through([
         :browser,
