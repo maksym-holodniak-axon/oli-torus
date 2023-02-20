@@ -1,0 +1,26 @@
+import { TorusBG } from './TorusBG.tsx';
+import { ScreenNodeBody } from 'apps/authoring/components/Flowchart/ScreenNode.tsx';
+import { FlowchartComponent } from 'apps/authoring/components/Flowchart/FlowchartComponent.tsx';
+import { fiveScreenOneBranch } from './sequence-samples';
+
+<Meta title="Torus/Advanced Authoring/Flowchart" />
+
+# Flowchart Feature
+
+## FlowchartComponent
+
+<TorusBG className="h-[700px]" dark={false}>
+  <FlowchartComponent sequence={fiveScreenOneBranch} />
+</TorusBG>
+
+## Screen Node
+
+<TorusBG>
+  <ScreenNodeBody
+    data={{
+      id: '1',
+      type: 'screen',
+      custom: { sequenceName: 'Screen 1' },
+    }}
+  />
+</TorusBG>
