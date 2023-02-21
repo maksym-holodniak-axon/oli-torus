@@ -24,7 +24,10 @@ const EdgeTypes = {
 
 export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({ edges, nodes }) => {
   const layout = layoutFlowchart(nodes, edges);
-  console.info('Edge layout', layout.edges);
+  // if (edges.length > 0 && nodes.length > 0) {
+  //   console.info('Edge layout', layout.edges);
+  //   debugger;
+  // }
   return (
     <ReactFlow
       nodeTypes={NodeTypes}

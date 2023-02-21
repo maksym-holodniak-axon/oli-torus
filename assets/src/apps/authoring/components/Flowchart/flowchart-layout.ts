@@ -4,11 +4,30 @@ import dagre from 'dagre';
 export const BOX_WIDTH = 128;
 export const BOX_HEIGHT = 112;
 
+// export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
+//   for (const node of nodes) {
+//   }
+
+//   return {
+//     nodes,
+//     edges,
+//   };
+// };
+
 export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
   const g = new dagre.graphlib.Graph<FlowchartNode>();
 
   // Set an object for the graph label
-  g.setGraph({ rankdir: 'LR', marginx: 50, marginy: 50 });
+  g.setGraph({
+    rankdir: 'LR',
+    // align: 'UL',
+    marginx: 50,
+    marginy: 50,
+    ranker: 'tight-tree',
+    nodesep: BOX_HEIGHT,
+    // acyclicer: 'greedy',
+    ranksep: BOX_HEIGHT,
+  });
 
   // Default to assigning a new object as a label for each new edge.
   g.setDefaultEdgeLabel(function () {
@@ -21,6 +40,7 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
   nodes.forEach((node) => {
     g.setNode(node.id, {
       ...node,
+      label: node.data.label,
       width: BOX_WIDTH,
       height: BOX_HEIGHT,
     });
@@ -37,7 +57,7 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
       const node = g.node(id);
       return {
         id: node.id,
-        position: { x: node.x, y: node.y * 3 },
+        position: { x: node.x, y: node.y },
         data: node.data,
         type: node.type,
       };
