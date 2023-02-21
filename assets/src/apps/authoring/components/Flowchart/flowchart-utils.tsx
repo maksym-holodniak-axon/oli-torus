@@ -1,4 +1,11 @@
 import { MarkerType } from 'reactflow';
+import {
+  IAction,
+  IActivity,
+  IEvent,
+  IRule,
+} from '../../../delivery/store/features/activities/slice';
+import { IActivityReference } from '../../../delivery/store/features/groups/slice';
 
 // TODO - this is not great to be defined here since the data comes from far higher up in the stack
 export interface FlowchartNodeData {
@@ -12,6 +19,7 @@ export interface FlowchartNodeData {
   type: string;
   resourceId: number;
 }
+
 export interface FlowchartNode {
   id: string;
   position: { x: number; y: number };
@@ -23,7 +31,7 @@ export interface FlowchartEdge {
   id: string;
   source: string;
   target: string;
-  rule: string;
+  //rule: string;
   type?: string;
   markerEnd?: {
     type: MarkerType;
@@ -50,7 +58,6 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
       source: '3245',
       target: '2742',
       type: 'step',
-      rule: 'this is a fake rule.',
       markerEnd: {
         type: MarkerType.Arrow,
       },
@@ -60,7 +67,6 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
       source: '2742',
       target: '2741',
       type: 'step',
-      rule: 'this is a fake rule.',
       markerEnd: {
         type: MarkerType.Arrow,
       },
@@ -70,7 +76,6 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
       source: '2742',
       target: '2559',
       type: 'step',
-      rule: 'this is a fake rule.',
       markerEnd: {
         type: MarkerType.Arrow,
       },
@@ -80,7 +85,6 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
       source: '2559',
       target: '2784',
       type: 'step',
-      rule: 'this is a fake rule.',
       markerEnd: {
         type: MarkerType.Arrow,
       },
@@ -90,7 +94,6 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
       source: '2741',
       target: '2784',
       type: 'step',
-      rule: 'this is a fake rule.',
       markerEnd: {
         type: MarkerType.Arrow,
       },
@@ -98,33 +101,77 @@ export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
   ];
 };
 
-export const sequenceToEdges = (children: any[]): FlowchartEdge[] => {
-  const activities = children.filter(onlyActivityReferences);
-  return activities.reduce((acc, curr, index) => {
-    if (index === activities.length - 1) return acc;
-    return [
-      ...acc,
-      {
-        id: `${curr.resourceId}-${index}`,
-        source: String(curr.resourceId),
-        target: String(activities[index + 1].resourceId),
-        type: 'step',
-      },
-    ];
-  }, []);
+const isNavigationRule = (rule: IRule): boolean => isNavigationEvent(rule.event);
+const isNavigationEvent = (event: IEvent): boolean =>
+  !!event.params.actions.find((action: IAction) => action.type === 'navigation');
+
+const sequenceIdToResourceId = (sequenceId: string, activities: IActivityReference[]) => {
+  const act = activities.find((activity) => activity.custom.sequenceId === sequenceId)?.resourceId;
+  return act ? String(act) : '';
 };
 
-// {
-//   "activitySlug": "screen_1",
-//   "custom": {
-//     "isBank": false,
-//     "isLayer": false,
-//     "sequenceId": "adaptive_activity_cbf19_4056730374",
-//     "sequenceName": "Screen 1"
-//   },
-//   "type": "activity-reference",
-//   "resourceId": 3245
-// }
+const generateEdgesFromRules = (
+  rules: IRule[],
+  source: string,
+  activityRefs: IActivityReference[],
+): FlowchartEdge[] => {
+  const edges: FlowchartEdge[] = [];
+  rules.filter(isNavigationRule).forEach((rule: IRule) => {
+    rule.event.params.actions.forEach((action: IAction) => {
+      const targetSequenceId = action.params.target;
+      const target = sequenceIdToResourceId(targetSequenceId, activityRefs);
+      if (source && target) {
+        edges.push({
+          id: rule.id,
+          source: String(source),
+          target,
+          type: 'step',
+          markerEnd: {
+            type: MarkerType.Arrow,
+          },
+        });
+      }
+    });
+  });
+
+  return edges;
+};
+
+export const buildEdges = (sequence: any[], activities: IActivity[]): FlowchartEdge[] => {
+  const activityRefs = sequence.filter(onlyActivityReferences) as IActivityReference[];
+  const edges: FlowchartEdge[] = [];
+  activityRefs.forEach((activityRef, index) => {
+    const activity = activities.find((act) => act.resourceId === activityRef.resourceId);
+    if (!activity) return;
+    const source = String(activity.resourceId);
+    const definedEdges = generateEdgesFromRules(
+      activity.authoring?.rules || [],
+      source,
+      activityRefs,
+    );
+    if (definedEdges.length === 0) {
+      // When there are now rules, we default to the next activity in the sequence
+      const nextActivityRef = activityRefs[index + 1];
+      if (!nextActivityRef) return;
+      const nextActivityId = sequenceIdToResourceId(
+        nextActivityRef.custom.sequenceId,
+        activityRefs,
+      );
+      edges.push({
+        id: `${source}-${nextActivityId}-${index}`,
+        source: String(source),
+        target: nextActivityId,
+        type: 'step',
+        markerEnd: {
+          type: MarkerType.Arrow,
+        },
+      });
+    } else {
+      edges.push(...definedEdges);
+    }
+  });
+  return edges;
+};
 
 export const layoutNodes = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
   if (nodes.length === 0) return [];

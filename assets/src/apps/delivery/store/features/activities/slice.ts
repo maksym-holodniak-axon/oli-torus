@@ -9,6 +9,7 @@ import {
   Slice,
 } from '@reduxjs/toolkit';
 import { ObjectiveMap } from 'data/content/activity';
+
 import { RootState } from '../../rootReducer';
 import ActivitiesSlice from './name';
 export interface ActivityContent {
@@ -16,11 +17,53 @@ export interface ActivityContent {
   partsLayout: any[];
   [key: string]: any;
 }
+
+interface ICondition {
+  fact: string; // ex: stage.dropdown.selectedItem,
+  id: string; // ex: c:3723326255,
+  operator: string; // ex: equal,
+  type: number; // ex: 2,
+  value: string; // ex: Correct
+}
+
+export interface IAction {
+  params: {
+    target: string;
+  };
+  type: string; // might be: "navigation" | "feedback" | "score" | "stage";
+}
+
+export interface IEvent {
+  params: {
+    actions: IAction[];
+  };
+  type: string;
+}
+export interface IRule {
+  additionalScore: number;
+  conditions: {
+    any?: ICondition[];
+    all?: ICondition[];
+    id: string;
+  };
+  correct: boolean;
+  default: boolean;
+  disabled: boolean;
+  event: IEvent;
+  forceProgress: boolean;
+  id: string;
+  name: string;
+  priority: number;
+}
+
 export interface IActivity {
   id: EntityId;
   resourceId?: number;
   activitySlug?: string;
-  authoring?: any;
+  authoring?: {
+    rules?: IRule[];
+    [key: string]: any;
+  };
   content?: ActivityContent;
   activityType?: any;
   title?: string;

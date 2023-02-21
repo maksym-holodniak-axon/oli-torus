@@ -16,11 +16,20 @@ export enum LayoutType {
   UNKNOWN = 'unknown',
 }
 
+export interface IActivityReference {
+  activitySlug: string;
+  custom: any;
+  type: string;
+  resourceId?: number;
+
+  activity_id?: string; // Below, we check for activity_id, activityId, and resourceId as the resource ID, I don't know the history of this, presumably legacy data?
+  activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
+}
 export interface IGroup {
   id?: number;
   type: 'group';
   layout: LayoutType;
-  children: any[]; // TODO: activity types
+  children: IActivityReference[];
 }
 
 export interface DeckLayoutGroup extends IGroup {
