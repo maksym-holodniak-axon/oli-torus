@@ -20,6 +20,10 @@ export interface FlowchartNodeData {
   resourceId: number;
 }
 
+const markerEnd = {
+  color: '#2563eb',
+  type: MarkerType.Arrow,
+};
 export interface FlowchartNode {
   id: string;
   position: { x: number; y: number };
@@ -34,6 +38,7 @@ export interface FlowchartEdge {
   //rule: string;
   type?: string;
   markerEnd?: {
+    color?: string;
     type: MarkerType;
   };
 }
@@ -50,56 +55,6 @@ export const sequenceToNodes = (children: any[]): FlowchartNode[] =>
       label: 'TEST ITEM',
     },
   }));
-
-export const debugSequenceToEdges = (children: any[]): FlowchartEdge[] => {
-  return [
-    {
-      id: '1',
-      source: '3245',
-      target: '2742',
-      type: 'step',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    },
-    {
-      id: '2',
-      source: '2742',
-      target: '2741',
-      type: 'step',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    },
-    {
-      id: '3',
-      source: '2742',
-      target: '2559',
-      type: 'step',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    },
-    {
-      id: '4',
-      source: '2559',
-      target: '2784',
-      type: 'step',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    },
-    {
-      id: '5',
-      source: '2741',
-      target: '2784',
-      type: 'step',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    },
-  ];
-};
 
 const isNavigationRule = (rule: IRule): boolean => isNavigationEvent(rule.event);
 const isNavigationEvent = (event: IEvent): boolean =>
@@ -125,10 +80,8 @@ const generateEdgesFromRules = (
           id: rule.id,
           source: String(source),
           target,
-          type: 'step',
-          markerEnd: {
-            type: MarkerType.Arrow,
-          },
+          type: 'floating',
+          markerEnd,
         });
       }
     });
@@ -161,10 +114,8 @@ export const buildEdges = (sequence: any[], activities: IActivity[]): FlowchartE
         id: `${source}-${nextActivityId}-${index}`,
         source: String(source),
         target: nextActivityId,
-        type: 'step',
-        markerEnd: {
-          type: MarkerType.Arrow,
-        },
+        type: 'floating',
+        markerEnd,
       });
     } else {
       edges.push(...definedEdges);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import { FlowchartNodeData } from './flowchart-utils';
+import { FlowchartNodeData } from '../flowchart-utils';
 
 interface NodeProps {
   data: FlowchartNodeData;
@@ -10,9 +10,9 @@ interface NodeProps {
 export const ScreenNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <>
-      <Handle type="target" position={Position.Left} />
+      <Handle type="target" position={Position.Left} style={{ display: 'none' }} />
       <ScreenNodeBody data={data} />
-      <Handle type="source" position={Position.Right} id="a" />
+      <Handle type="source" position={Position.Right} id="a" style={{ display: 'none' }} />
     </>
   );
 };

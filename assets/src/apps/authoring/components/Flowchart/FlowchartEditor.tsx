@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectAllActivities } from '../../../delivery/store/features/activities/slice';
 
 import { selectSequence } from '../../../delivery/store/features/groups/selectors/deck';
-import { buildEdges, debugSequenceToEdges, layoutNodes, sequenceToNodes } from './flowchart-utils';
+import { buildEdges, sequenceToNodes } from './flowchart-utils';
 
 import { FlowchartComponent } from './FlowchartComponent';
 
@@ -17,12 +17,7 @@ export const FlowchartEditor = () => {
   const sequence = useSelector(selectSequence);
   const activities = useSelector(selectAllActivities);
   const edges = buildEdges(sequence, activities);
-  const nodes = layoutNodes(sequenceToNodes(sequence), edges);
-
-  if (edges.length > 0) {
-    console.info(edges);
-    debugger;
-  }
+  const nodes = sequenceToNodes(sequence);
 
   return (
     <div className="fixed bottom-0 right-0 top-[66px] left-[66px]  z-[1] bg-delivery-body ">
