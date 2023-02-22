@@ -19,9 +19,13 @@ export const FlowchartEditor = () => {
   const edges = buildEdges(sequence, activities);
   const nodes = sequenceToNodes(sequence);
 
+  const onCreateNode = (fromId: string, toId?: string) => {
+    console.log('onCreateNode', fromId, toId);
+  };
+
   return (
     <div className="fixed bottom-0 right-0 top-[66px] left-[66px]  z-[1] bg-delivery-body ">
-      <FlowchartComponent nodes={nodes} edges={edges} />
+      <FlowchartComponent nodes={nodes} edges={edges} onCreateNode={onCreateNode} />
     </div>
   );
 };

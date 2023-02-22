@@ -24,8 +24,38 @@ const dagreEdgeToFlowchartEdge = (edge: FlowchartEdge & dagre.GraphEdge): Flowch
   };
 };
 
+// type WeightedEdge = FlowchartEdge & { weight: number; width: number; height: number };
+
+// const weightCycles = (edges: FlowchartEdge[], visitedNodes: string[] = []): WeightedEdge[] => {
+//   if (edges.length === 0) {
+//     return [];
+//   }
+//   return edges.map((e) => ({
+//     ...e,
+//     weight: e.source === '16806' && e.target === '2742' ? 1 : 500,
+//     width: 0,
+//     height: 0,
+//   }));
+
+//   const [edge, ...rest] = edges;
+//   const targetNodeId = edge.target;
+//   const targetNodeExits = edges.filter(
+//     (e) => e.source === targetNodeId && !visitedNodes.includes(e.target),
+//   );
+//   const validEdges = [edge, ...targetNodeExits];
+
+//   console.info('removeCycles', edges, validEdges, visitedNodes);
+
+//   return [
+//     ...validEdges,
+//     ...weightCycles(rest, [...visitedNodes, ...validEdges.map((e) => e.target)]),
+//   ];
+// };
+
 export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
   const g = new dagre.graphlib.Graph<FlowchartNode>();
+
+  // const nonCycleEdges = weightCycles(edges);
 
   // Set an object for the graph label
   g.setGraph({

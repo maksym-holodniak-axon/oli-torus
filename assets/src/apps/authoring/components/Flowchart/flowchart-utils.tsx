@@ -8,7 +8,7 @@ import {
 import { IActivityReference } from '../../../delivery/store/features/groups/slice';
 
 // TODO - this is not great to be defined here since the data comes from far higher up in the stack
-export interface FlowchartNodeData {
+export interface FlowchartScreenNodeData {
   activitySlug: string;
   custom: {
     isBank: boolean;
@@ -20,16 +20,29 @@ export interface FlowchartNodeData {
   resourceId: number;
 }
 
+export interface FlowchartPlaceholderNodeData {
+  fromScreenId: string;
+}
+
 const markerEnd = {
   color: '#2563eb',
   type: MarkerType.Arrow,
 };
-export interface FlowchartNode {
+export interface FlowchartScreenNode {
   id: string;
   position: { x: number; y: number };
-  data: any;
-  type: string;
+  data: FlowchartScreenNodeData;
+  type: 'screen';
 }
+
+export interface FlowchartPlaceholderNode {
+  id: string;
+  position: { x: number; y: number };
+  data: FlowchartPlaceholderNodeData;
+  type: 'placeholder';
+}
+
+type FlowchartNode = FlowchartScreenNode | FlowchartPlaceholderNode;
 
 export interface Point {
   x: number;
@@ -132,27 +145,47 @@ export const buildEdges = (sequence: any[], activities: IActivity[]): FlowchartE
   return edges;
 };
 
-// export const layoutNodes = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
-//   if (nodes.length === 0) return [];
-//   if (edges.length === 0) return [];
-//   const nodeMap: Record<string, FlowchartNode> = nodes.reduce(
-//     (acc, curr) => ({ ...acc, [curr.id]: curr }),
-//     {},
-//   );
+export const addPlaceholders = (
+  nodes: FlowchartNode[],
+  edges: FlowchartEdge[],
+): [FlowchartNode[], FlowchartEdge[]] => {
+  if (nodes.length === 0) {
+    return [
+      [
+        {
+          id: 'start-placeholder',
+          position: { x: 0, y: 0 },
+          data: { fromScreenId: '' },
+          type: 'placeholder',
+        },
+      ],
+      [],
+    ];
+  }
 
-//   const layout = (nodeId: string, x: number, y: number, visited: string[] = []) => {
-//     const node = nodeMap[nodeId];
-//     if (!node) return;
-//     node.position = { x, y };
-//     const connected = edges.filter((e) => e.source === node.id);
-//     connected
-//       .filter((e) => -1 === visited.indexOf(e.target))
-//       .forEach((edge, index) => {
-//         if (!edge) return;
-//         layout(edge.target, x + 200, y + index * 150, [...visited, nodeId]);
-//       });
-//   };
+  const nodesWithPlaceholder: FlowchartNode[] = [
+    ...nodes,
+    {
+      id: 'end-placeholder',
+      position: { x: 0, y: 0 },
+      data: { fromScreenId: nodes[nodes.length - 1].id },
+      type: 'placeholder',
+    },
+  ];
 
-//   layout(nodes[0].id, 50, 50);
-//   return nodes;
-// };
+  const edgesWithPlaceholder: FlowchartEdge[] = [
+    ...edges,
+    {
+      id: 'placeholder-edge',
+      source: nodes[nodes.length - 1].id,
+      target: 'end-placeholder',
+      type: 'floating',
+      markerEnd: {
+        type: MarkerType.Arrow,
+        color: '#2563eb',
+      },
+    },
+  ];
+
+  return [nodesWithPlaceholder, edgesWithPlaceholder];
+};
