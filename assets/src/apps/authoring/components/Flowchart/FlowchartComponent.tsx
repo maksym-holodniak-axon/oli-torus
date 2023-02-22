@@ -33,7 +33,7 @@ export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({ edges, n
       nodeTypes={NodeTypes}
       edgeTypes={EdgeTypes}
       nodes={layout.nodes}
-      edges={edges}
+      edges={layout.edges}
       connectionLineComponent={FloatingConnectionLine}
 
       // onNodesChange={onNodesChange}

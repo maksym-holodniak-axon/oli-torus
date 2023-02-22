@@ -31,6 +31,11 @@ export interface FlowchartNode {
   type: string;
 }
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
 export interface FlowchartEdge {
   id: string;
   source: string;
@@ -40,6 +45,9 @@ export interface FlowchartEdge {
   markerEnd?: {
     color?: string;
     type: MarkerType;
+  };
+  data?: {
+    points?: Point[];
   };
 }
 
@@ -124,27 +132,27 @@ export const buildEdges = (sequence: any[], activities: IActivity[]): FlowchartE
   return edges;
 };
 
-export const layoutNodes = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
-  if (nodes.length === 0) return [];
-  if (edges.length === 0) return [];
-  const nodeMap: Record<string, FlowchartNode> = nodes.reduce(
-    (acc, curr) => ({ ...acc, [curr.id]: curr }),
-    {},
-  );
+// export const layoutNodes = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
+//   if (nodes.length === 0) return [];
+//   if (edges.length === 0) return [];
+//   const nodeMap: Record<string, FlowchartNode> = nodes.reduce(
+//     (acc, curr) => ({ ...acc, [curr.id]: curr }),
+//     {},
+//   );
 
-  const layout = (nodeId: string, x: number, y: number, visited: string[] = []) => {
-    const node = nodeMap[nodeId];
-    if (!node) return;
-    node.position = { x, y };
-    const connected = edges.filter((e) => e.source === node.id);
-    connected
-      .filter((e) => -1 === visited.indexOf(e.target))
-      .forEach((edge, index) => {
-        if (!edge) return;
-        layout(edge.target, x + 200, y + index * 150, [...visited, nodeId]);
-      });
-  };
+//   const layout = (nodeId: string, x: number, y: number, visited: string[] = []) => {
+//     const node = nodeMap[nodeId];
+//     if (!node) return;
+//     node.position = { x, y };
+//     const connected = edges.filter((e) => e.source === node.id);
+//     connected
+//       .filter((e) => -1 === visited.indexOf(e.target))
+//       .forEach((edge, index) => {
+//         if (!edge) return;
+//         layout(edge.target, x + 200, y + index * 150, [...visited, nodeId]);
+//       });
+//   };
 
-  layout(nodes[0].id, 50, 50);
-  return nodes;
-};
+//   layout(nodes[0].id, 50, 50);
+//   return nodes;
+// };

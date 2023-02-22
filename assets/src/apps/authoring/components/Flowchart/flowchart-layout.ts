@@ -14,6 +14,16 @@ export const BOX_HEIGHT = 112;
 //   };
 // };
 
+const dagreEdgeToFlowchartEdge = (edge: FlowchartEdge & dagre.GraphEdge): FlowchartEdge => {
+  const { points, ...rest } = edge;
+  return {
+    ...rest,
+    data: {
+      points,
+    },
+  };
+};
+
 export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
   const g = new dagre.graphlib.Graph<FlowchartNode>();
 
@@ -47,7 +57,7 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
   });
 
   edges.forEach((edge) => {
-    g.setEdge(edge.source, edge.target);
+    g.setEdge(edge.source, edge.target, edge);
   });
 
   dagre.layout(g);
@@ -63,6 +73,9 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
       };
     }),
 
-    edges: g.edges().map((edge) => g.edge(edge)),
+    edges: g
+      .edges()
+      .map((edge) => g.edge(edge))
+      .map(dagreEdgeToFlowchartEdge),
   };
 };
