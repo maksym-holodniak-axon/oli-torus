@@ -38,7 +38,21 @@ interface ActivityRegistration {
   authoring_element: string;
 }
 
+/**
+ * The application can be run in the simple flowchart or the more mode, where screens are laid out in the flowcharting tool
+ * with a limited set of options for rules, or in expert mode, which exposes the full set of options for rules, layers, and
+ * sub-screens.
+ */
+type ApplicationMode = 'flowchart' | 'expert';
+
+/**
+ * When in flowchart mode, we might be looking at the flowchart editor or the page editor.
+ * When in expert mode, there is only the page editor.
+ */
+type EditingMode = 'page' | 'flowchart';
 export interface AppState {
+  applicationMode: ApplicationMode;
+  editingMode: EditingMode;
   paths: Record<string, string> | null;
   isAdmin: boolean;
   projectSlug: string;
@@ -61,6 +75,8 @@ export interface AppState {
 }
 
 const initialState: AppState = {
+  applicationMode: 'expert',
+  editingMode: 'page',
   paths: null,
   isAdmin: false,
   projectSlug: '',
@@ -97,6 +113,10 @@ const slice: Slice<AppState> = createSlice({
   name: AppSlice,
   initialState,
   reducers: {
+    debugEnableFlowchartMode(state) {
+      state.editingMode = 'flowchart';
+      state.applicationMode = 'flowchart';
+    },
     setInitialConfig(state, action: PayloadAction<AppConfig>) {
       state.paths = action.payload.paths || initialState.paths;
       state.isAdmin = !!action.payload.isAdmin;
@@ -186,6 +206,7 @@ export const {
   setCopiedPart,
   setReadonly,
   setShowDiagnosticsWindow,
+  debugEnableFlowchartMode,
   setShowScoringOverview,
 } = slice.actions;
 
@@ -275,5 +296,12 @@ export const selectShowScoringOverview = createSelector(
 );
 
 export const selectIsAdmin = createSelector(selectState, (state: AppState) => state.isAdmin);
+
+export const selectAppMode = createSelector(
+  selectState,
+  (state: AppState) => state.applicationMode,
+);
+
+export const selectEditMode = createSelector(selectState, (state: AppState) => state.editingMode);
 
 export default slice.reducer;
