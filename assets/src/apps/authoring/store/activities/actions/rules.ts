@@ -45,12 +45,12 @@ export const duplicateRule = createAsyncThunk(
 
 export const createCorrectRule = createAsyncThunk(
   `${ActivitiesSlice}/createCorrectRule`,
-  async (payload: { ruleId?: string; isDefault?: boolean }) => {
-    const { ruleId = `r:${guid()}`, isDefault = false } = payload;
+  async (payload: { ruleId?: string; isDefault?: boolean; label?: string }) => {
+    const { ruleId = `r:${guid()}`, isDefault = false, label = 'correct' } = payload;
 
     const rule = {
-      id: `${ruleId}.correct`,
-      name: 'correct',
+      id: `${ruleId}.${label}`,
+      name: label,
       disabled: false,
       additionalScore: 0.0,
       forceProgress: false,
@@ -58,7 +58,7 @@ export const createCorrectRule = createAsyncThunk(
       correct: true,
       conditions: { all: [] },
       event: {
-        type: `${ruleId}.correct`,
+        type: `${ruleId}.${label}`,
         params: {
           actions: [
             {

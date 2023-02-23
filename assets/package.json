@@ -19,6 +19,7 @@
     "test": "jest",
     "test:watch": "jest --watch -o --coverage=false",
     "type-coverage": "type-coverage",
+    "check-types": "tsc --noemit",
     "sdk-docs": "npx typedoc --tsconfig tsconfig.sdk.json --plugin typedoc-plugin-markdown  --out typedocs src/components/activities/index.ts",
     "//": "Note: Under normal usage, tailwind is managed by phoenix, this is only for storybook",
     "build-storybook-tailwind": "tailwindcss -c tailwind.config.js -i css/app.css -o .storybook/temp/app.css",

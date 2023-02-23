@@ -1,8 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectAllActivities } from '../../../delivery/store/features/activities/slice';
 
 import { selectSequence } from '../../../delivery/store/features/groups/selectors/deck';
+import { addFlowchartScreen } from './flowchart-actions';
 import { buildEdges, sequenceToNodes } from './flowchart-utils';
 
 import { FlowchartComponent } from './FlowchartComponent';
@@ -14,6 +15,7 @@ import { FlowchartComponent } from './FlowchartComponent';
 */
 
 export const FlowchartEditor = () => {
+  const dispatch = useDispatch();
   const sequence = useSelector(selectSequence);
   const activities = useSelector(selectAllActivities);
   const edges = buildEdges(sequence, activities);
@@ -21,6 +23,7 @@ export const FlowchartEditor = () => {
 
   const onCreateNode = (fromId: string, toId?: string) => {
     console.log('onCreateNode', fromId, toId);
+    dispatch(addFlowchartScreen({ fromScreenId: fromId, toScreenId: toId }));
   };
 
   return (

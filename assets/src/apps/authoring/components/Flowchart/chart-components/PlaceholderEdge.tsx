@@ -11,7 +11,7 @@ interface FloatingEdgeProps {
   style?: React.CSSProperties;
 }
 
-export const FloatingEdge: React.FC<FloatingEdgeProps> = ({
+export const PlaceholderEdge: React.FC<FloatingEdgeProps> = ({
   id,
   source,
   target,
@@ -39,10 +39,10 @@ export const FloatingEdge: React.FC<FloatingEdgeProps> = ({
   return (
     <path
       id={id}
-      className="react-flow__edge-path"
       d={edgePath}
       markerEnd={markerEnd}
-      stroke="#22f"
+      stroke="#b3b4b7"
+      strokeWidth={2}
       style={style}
     />
   );

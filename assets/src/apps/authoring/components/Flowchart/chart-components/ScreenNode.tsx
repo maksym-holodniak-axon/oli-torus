@@ -19,9 +19,9 @@ export const ScreenNode: React.FC<NodeProps> = ({ data }) => {
 
 // Just the interior of the node, useful to have separate for storybook
 export const ScreenNodeBody: React.FC<NodeProps> = ({ data }) => (
-  <div className="p-4 text-center border-2 w-32 h-28 bg-white text-delivery-body-dark">
-    {data.custom.sequenceName}
-    <br />
-    {data.resourceId}
+  <div className="p-4 text-center border-2 w-32 h-28 bg-white text-delivery-body-dark flex justify-center align-middle">
+    <div className="inline">{data.custom.sequenceName}</div>
+    {/* <br />
+    {data.resourceId} */}
   </div>
 );

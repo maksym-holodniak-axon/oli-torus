@@ -50,7 +50,7 @@ const SequenceEditor: React.FC = () => {
   const [itemToRename, setItemToRename] = useState<any>(undefined);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
   const [itemToDelete, setItemToDelete] = useState<any>(undefined);
-  const applicationMode = useSelector(selectAppMode);
+
   const isAdmin = useSelector(selectIsAdmin);
   const projectSlug = useSelector(selectProjectSlug);
 

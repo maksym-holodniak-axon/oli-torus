@@ -6,9 +6,10 @@ import { layoutFlowchart } from './flowchart-layout';
 
 import { addPlaceholders, FlowchartEdge, FlowchartNode } from './flowchart-utils';
 import { ScreenNode } from './chart-components/ScreenNode';
-import FloatingEdge from './chart-components/FloatingEdge';
+import { FloatingEdge } from './chart-components/FloatingEdge';
 import FloatingConnectionLine from './chart-components/FloatingConnectionLine';
 import { PlaceholderNode } from './chart-components/PlaceholderNode';
+import { PlaceholderEdge } from './chart-components/PlaceholderEdge';
 
 interface FlowchartComponentProps {
   nodes: FlowchartNode[];
@@ -23,6 +24,7 @@ const NodeTypes = {
 
 const EdgeTypes = {
   floating: FloatingEdge,
+  placeholder: PlaceholderEdge,
 };
 
 export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({
@@ -40,6 +42,7 @@ export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({
   const [nodes, edges] = addPlaceholders(props.nodes, props.edges);
 
   const layout = layoutFlowchart(nodes, edges);
+  // TODO - we're currently ignoring the dagre edges from layout. I think we could avoid some overlaps by using them.
 
   return (
     <ReactFlow
@@ -50,10 +53,6 @@ export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({
       connectionLineComponent={FloatingConnectionLine}
       onNodeClick={onNodeClick}
       proOptions={{ hideAttribution: true }}
-
-      // onNodesChange={onNodesChange}
-      // onEdgesChange={onEdgesChange}
-      // onConnect={onConnect}
     >
       {/* <MiniMap /> */}
       <Controls />

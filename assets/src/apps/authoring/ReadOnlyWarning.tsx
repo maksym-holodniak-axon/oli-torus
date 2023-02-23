@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, Button } from 'react-bootstrap';
+import { PageContext } from './types';
 
 interface ReadOnlyWarningProps {
   isAttemptDisableReadOnlyFailed: boolean;
@@ -61,10 +62,6 @@ export const ReadOnlyWarning: React.FC<ReadOnlyWarningProps> = ({
       >
         Open Preview <i className="fas fa-external-link-alt ml-1"></i>
       </Button>
-    </div>
-    <div className="mt-4">
-      DEBUG / Alpha / Dev: Try out the new{' '}
-      <Button onClick={enableFlowchartMode}>Flowchart Mode</Button>
     </div>
   </Alert>
 );

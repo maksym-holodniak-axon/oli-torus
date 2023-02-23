@@ -107,6 +107,7 @@ export interface AppConfig {
   activityTypes?: any[];
   allObjectives?: Objective[];
   copiedPart?: any;
+  applicationMode: ApplicationMode;
 }
 
 const slice: Slice<AppState> = createSlice({
@@ -130,6 +131,8 @@ const slice: Slice<AppState> = createSlice({
 
       state.activityTypes = action.payload.activityTypes || initialState.activityTypes;
       state.copiedPart = action.payload.copiedPart || initialState.copiedPart;
+      state.applicationMode = action.payload.applicationMode || initialState.applicationMode;
+      state.editingMode = state.applicationMode === 'flowchart' ? 'flowchart' : 'page'; // Default to the flowchart editor when in flowchart mode.
     },
     setPanelState(
       state,

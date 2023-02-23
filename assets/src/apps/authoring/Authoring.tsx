@@ -15,6 +15,7 @@ import { SidePanel } from './components/SidePanel';
 import { releaseEditingLock } from './store/app/actions/locking';
 import { attemptDisableReadOnly } from './store/app/actions/readonly';
 import {
+  AppConfig,
   debugEnableFlowchartMode,
   selectAppMode,
   selectBottomPanel,
@@ -191,7 +192,7 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
   }, [isAppVisible]);
 
   useEffect(() => {
-    const appConfig = {
+    const appConfig: AppConfig = {
       paths: props.paths,
       isAdmin: props.isAdmin,
       projectSlug: props.projectSlug,
@@ -199,9 +200,11 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
       partComponentTypes: props.partComponentTypes,
       activityTypes: props.activityTypes,
       allObjectives: props.content.allObjectives || [],
+      applicationMode:
+        props.content.content?.custom?.contentMode === 'flowchart' ? 'flowchart' : 'expert',
     };
     dispatch(setInitialConfig(appConfig));
-  }, [props]);
+  }, [dispatch, props]);
 
   useEffect(() => {
     window.addEventListener('beforeunload', async () =>

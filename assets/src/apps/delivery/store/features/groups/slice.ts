@@ -9,6 +9,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { RootState } from '../../rootReducer';
+import { SequenceEntry, SequenceEntryChild } from './actions/sequence';
 import GroupsSlice from './name';
 
 export enum LayoutType {
@@ -16,15 +17,19 @@ export enum LayoutType {
   UNKNOWN = 'unknown',
 }
 
-export interface IActivityReference {
-  activitySlug: string;
-  custom: any;
+type IActivityReference = SequenceEntry<SequenceEntryChild> & {
   type: string;
-  resourceId?: number;
-
-  activity_id?: string; // Below, we check for activity_id, activityId, and resourceId as the resource ID, I don't know the history of this, presumably legacy data?
   activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
-}
+};
+// export interface IActivityReference {
+//   activitySlug: string;
+//   custom: any;
+//   type: string;
+//   resourceId?: number;
+
+//   activity_id?: string; // Below, we check for activity_id, activityId, and resourceId as the resource ID, I don't know the history of this, presumably legacy data?
+//   activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
+// }
 export interface IGroup {
   id?: number;
   type: 'group';
@@ -79,6 +84,7 @@ export const { setCurrentGroupId, setGroups, upsertGroup } = slice.actions;
 
 export const selectState = (state: RootState): GroupsState => state[GroupsSlice] as GroupsState;
 export const { selectAll, selectById, selectTotal } = adapter.getSelectors(selectState);
+export const selectAllGroups = selectAll;
 export const selectCurrentGroup = createSelector(
   selectState,
   (state: GroupsState) => state.entities[state.currentGroupId],

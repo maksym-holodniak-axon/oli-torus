@@ -179,10 +179,10 @@ export const addPlaceholders = (
       id: 'placeholder-edge',
       source: nodes[nodes.length - 1].id,
       target: 'end-placeholder',
-      type: 'floating',
+      type: 'placeholder',
       markerEnd: {
         type: MarkerType.Arrow,
-        color: '#2563eb',
+        color: '#b3b4b7',
       },
     },
   ];
