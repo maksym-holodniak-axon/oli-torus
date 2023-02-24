@@ -160,3 +160,17 @@ You can get more details about a screen from redux->activities->entities, they l
 ```
 
 Note the "rules" section in each activity, that defines the edges coming out of this activity.
+
+# New flowchart data
+
+## Activity level
+
+`activity.authoring.flowchart`
+
+Contains flowchart related data about an activity. Only present when the lesson is in flowchart mode. Has no effect on delivery.
+
+`activity.authoring.flowchart.paths`
+
+The visual paths in the flowchart tool. Most of the time, each path will correspond with a rule, but not always. The paths may be a work-in-progress
+that can't be represented as rules yet. There is also a path for the end-of-lesson that corresponds to where placeholder screens to add new screens
+should go that never get turned into rules.

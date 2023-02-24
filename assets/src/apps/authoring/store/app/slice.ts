@@ -114,9 +114,9 @@ const slice: Slice<AppState> = createSlice({
   name: AppSlice,
   initialState,
   reducers: {
-    debugEnableFlowchartMode(state) {
-      state.editingMode = 'flowchart';
-      state.applicationMode = 'flowchart';
+    debugAppMode(state, action: PayloadAction<{ mode: ApplicationMode }>) {
+      state.editingMode = action.payload.mode === 'flowchart' ? 'flowchart' : 'page';
+      state.applicationMode = action.payload.mode || 'flowchart';
     },
     setInitialConfig(state, action: PayloadAction<AppConfig>) {
       state.paths = action.payload.paths || initialState.paths;
@@ -209,7 +209,7 @@ export const {
   setCopiedPart,
   setReadonly,
   setShowDiagnosticsWindow,
-  debugEnableFlowchartMode,
+  debugAppMode,
   setShowScoringOverview,
 } = slice.actions;
 

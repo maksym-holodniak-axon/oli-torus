@@ -1,6 +1,5 @@
 import React from 'react';
 import { Alert, Button } from 'react-bootstrap';
-import { PageContext } from './types';
 
 interface ReadOnlyWarningProps {
   isAttemptDisableReadOnlyFailed: boolean;
@@ -8,7 +7,6 @@ interface ReadOnlyWarningProps {
   dismissReadOnlyWarning: (p: { attemptEdit: boolean }) => void;
   url: string;
   windowName: string;
-  enableFlowchartMode: () => void;
 }
 
 export const ReadOnlyWarning: React.FC<ReadOnlyWarningProps> = ({
@@ -17,7 +15,6 @@ export const ReadOnlyWarning: React.FC<ReadOnlyWarningProps> = ({
   dismissReadOnlyWarning,
   url,
   windowName,
-  enableFlowchartMode,
 }) => (
   <Alert variant={alertSeverity}>
     <Alert.Heading>Opening in Read-Only Mode</Alert.Heading>

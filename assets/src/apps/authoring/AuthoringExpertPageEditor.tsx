@@ -26,7 +26,7 @@ export const AuthoringExpertPageEditor: React.FC<AuthoringPageEditorProps> = ({
   handlePanelStateChange,
   currentRule,
 }) => (
-  <div id="advanced-authoring" className={`advanced-authoring d-none`}>
+  <div id="advanced-authoring" className={`advanced-authoring`}>
     <HeaderNav panelState={panelState} isVisible={panelState.top} />
     <SidePanel
       position="left"

@@ -9,6 +9,7 @@ import {
   Slice,
 } from '@reduxjs/toolkit';
 import { ObjectiveMap } from 'data/content/activity';
+import { AuthoringFlowchartScreenData } from '../../../../authoring/components/Flowchart/flowchart-path-utils';
 
 import { RootState } from '../../rootReducer';
 import ActivitiesSlice from './name';
@@ -62,6 +63,7 @@ export interface IActivity {
   activitySlug?: string;
   authoring?: {
     rules?: IRule[];
+    flowchart?: AuthoringFlowchartScreenData;
     [key: string]: any;
   };
   content?: ActivityContent;

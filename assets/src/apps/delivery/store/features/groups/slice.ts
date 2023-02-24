@@ -17,7 +17,7 @@ export enum LayoutType {
   UNKNOWN = 'unknown',
 }
 
-type IActivityReference = SequenceEntry<SequenceEntryChild> & {
+export type IActivityReference = SequenceEntry<SequenceEntryChild> & {
   type: string;
   activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
 };

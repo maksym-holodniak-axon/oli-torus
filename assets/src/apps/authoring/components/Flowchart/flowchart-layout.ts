@@ -4,16 +4,6 @@ import dagre from 'dagre';
 export const BOX_WIDTH = 128;
 export const BOX_HEIGHT = 112;
 
-// export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
-//   for (const node of nodes) {
-//   }
-
-//   return {
-//     nodes,
-//     edges,
-//   };
-// };
-
 const dagreEdgeToFlowchartEdge = (edge: FlowchartEdge & dagre.GraphEdge): FlowchartEdge => {
   const { points, ...rest } = edge;
   return {
@@ -23,34 +13,6 @@ const dagreEdgeToFlowchartEdge = (edge: FlowchartEdge & dagre.GraphEdge): Flowch
     },
   };
 };
-
-// type WeightedEdge = FlowchartEdge & { weight: number; width: number; height: number };
-
-// const weightCycles = (edges: FlowchartEdge[], visitedNodes: string[] = []): WeightedEdge[] => {
-//   if (edges.length === 0) {
-//     return [];
-//   }
-//   return edges.map((e) => ({
-//     ...e,
-//     weight: e.source === '16806' && e.target === '2742' ? 1 : 500,
-//     width: 0,
-//     height: 0,
-//   }));
-
-//   const [edge, ...rest] = edges;
-//   const targetNodeId = edge.target;
-//   const targetNodeExits = edges.filter(
-//     (e) => e.source === targetNodeId && !visitedNodes.includes(e.target),
-//   );
-//   const validEdges = [edge, ...targetNodeExits];
-
-//   console.info('removeCycles', edges, validEdges, visitedNodes);
-
-//   return [
-//     ...validEdges,
-//     ...weightCycles(rest, [...visitedNodes, ...validEdges.map((e) => e.target)]),
-//   ];
-// };
 
 export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) => {
   const g = new dagre.graphlib.Graph<FlowchartNode>();
@@ -80,7 +42,7 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
   nodes.forEach((node) => {
     g.setNode(node.id, {
       ...node,
-      label: node.data.label,
+      // label: node.data.label,
       width: BOX_WIDTH,
       height: BOX_HEIGHT,
     });
@@ -93,15 +55,18 @@ export const layoutFlowchart = (nodes: FlowchartNode[], edges: FlowchartEdge[]) 
   dagre.layout(g);
 
   return {
-    nodes: g.nodes().map((id) => {
-      const node = g.node(id);
-      return {
-        id: node.id,
-        position: { x: node.x, y: node.y },
-        data: node.data,
-        type: node.type,
-      };
-    }),
+    nodes: g
+      .nodes()
+      .filter((id) => !!g.node(id))
+      .map((id) => {
+        const node = g.node(id);
+        return {
+          id: node.id,
+          position: { x: node.x, y: node.y },
+          data: node.data,
+          type: node.type,
+        };
+      }),
 
     edges: g
       .edges()

@@ -1,22 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { isFirefox } from 'utils/browser';
-import { BottomPanel } from './BottomPanel';
-import { AdaptivityEditor } from './components/AdaptivityEditor/AdaptivityEditor';
-import { InitStateEditor } from './components/AdaptivityEditor/InitStateEditor';
-import EditingCanvas from './components/EditingCanvas/EditingCanvas';
-import HeaderNav from './components/HeaderNav';
-import LeftMenu from './components/LeftMenu/LeftMenu';
 import DiagnosticsWindow from './components/Modal/DiagnosticsWindow';
 import ScoringOverview from './components/Modal/ScoringOverview';
-import RightMenu from './components/RightMenu/RightMenu';
-import { SidePanel } from './components/SidePanel';
 import { releaseEditingLock } from './store/app/actions/locking';
 import { attemptDisableReadOnly } from './store/app/actions/readonly';
 import {
   AppConfig,
-  debugEnableFlowchartMode,
   selectAppMode,
   selectBottomPanel,
   selectCurrentRule,
@@ -59,7 +49,6 @@ export interface AuthoringProps {
 const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
   const dispatch = useDispatch();
 
-  const authoringContainer = document.getElementById('advanced-authoring');
   const [isAppVisible, setIsAppVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -74,9 +63,6 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
   const shouldShowReadOnlyWarning = !isLoading && isReadOnly && !isReadOnlyWarningDismissed;
 
   const readyToEdit = !isLoading && (hasEditingLock || isReadOnly) && !shouldShowReadOnlyWarning;
-
-  const shouldShowPageEditor = readyToEdit && editingMode === 'page';
-  const shouldShowFlowchartEditor = readyToEdit && editingMode === 'flowchart';
 
   const alertSeverity = isAttemptDisableReadOnlyFailed || shouldShowLockError ? 'warning' : 'info';
 
@@ -113,6 +99,8 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
 
   const isFlowchartMode = applicationMode === 'flowchart';
   const isExpertMode = applicationMode === 'expert';
+  const shouldShowPageEditor = readyToEdit && (editingMode === 'page' || isExpertMode);
+  const shouldShowFlowchartEditor = readyToEdit && editingMode === 'flowchart';
 
   const panelState = {
     left: leftPanelState,
@@ -153,20 +141,11 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
     setIsReadOnlyWarningDismissed(true);
   };
 
-  const enableFlowchartMode = async () => {
-    await dismissReadOnlyWarning({ attemptEdit: true });
-    dispatch(debugEnableFlowchartMode({}));
-  };
-
   useEffect(() => {
     if (isAppVisible) {
       // forced light mode to save on initial dev time
       document.documentElement.classList.remove('dark');
       document.body.classList.add('overflow-hidden'); // prevents double scroll bars
-      authoringContainer?.classList.remove('d-none');
-      setTimeout(() => {
-        authoringContainer?.classList.add('startup');
-      }, 50);
     }
 
     if (!isAppVisible) {
@@ -181,10 +160,6 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
           break;
       }
       document.body.classList.remove('overflow-hidden');
-      authoringContainer?.classList.remove('startup');
-      setTimeout(() => {
-        authoringContainer?.classList.add('d-none');
-      }, 350);
     }
     return () => {
       document.body.classList.remove('overflow-hidden');
@@ -245,7 +220,7 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
         clearTimeout(loadingTimeout);
       }
     };
-  }, [props, hasEditingLock, isReadOnly, isReadOnlyWarningDismissed]);
+  }, [props, hasEditingLock, isReadOnly, isReadOnlyWarningDismissed, dispatch]);
 
   return (
     <AppsignalContext.Provider value={appsignal}>
@@ -284,7 +259,6 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
             dismissReadOnlyWarning={dismissReadOnlyWarning}
             url={url}
             windowName={windowName}
-            enableFlowchartMode={enableFlowchartMode}
           />
         )}
 

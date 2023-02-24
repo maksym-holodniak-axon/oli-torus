@@ -25,9 +25,11 @@ export const PlaceholderNode: React.FC<NodeProps> = ({ data }) => {
 
 // Just the interior of the node, useful to have separate for storybook
 export const PlaceholderNodeBody: React.FC<NodeProps> = ({ data }) => (
-  <div className="cursor-pointer text-center border-2 border-dashed  w-32 h-28 bg-gray-50 text-delivery-body-dark nodrag">
-    <div className="opacity-0 hover:opacity-100 w-full h-full flex justify-center align-middle">
-      <button>Add Screen</button>
+  <div className=" align-middle flex">
+    <div className="cursor-pointer text-center border-2 border-dashed  w-32 h-28 bg-gray-50 text-delivery-body-dark nodrag">
+      <div className="opacity-0 hover:opacity-100 w-full h-full flex justify-center align-middle">
+        <button>Add Screen</button>
+      </div>
     </div>
   </div>
 );
