@@ -324,7 +324,7 @@ export const findNextSequenceId = createAsyncThunk(
           if (!firstChild) {
             navError = 'Target Layer has no children!';
           }
-          nextSequenceEntry = firstChild;
+          nextSequenceEntry = firstChild || null;
         }
       }
       if (!nextSequenceEntry) {

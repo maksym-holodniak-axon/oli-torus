@@ -21,9 +21,9 @@ export const selectCurrentSequenceId = createSelector(
     return sequence.find((entry) => {
       // temp hack for authoring
       // TODO: rewire delivery to use resourceId instead of sequenceId
-      let testId = entry.custom.sequenceId;
+      let testId: string | number = entry.custom.sequenceId;
       if (typeof currentActivityId === 'number') {
-        testId = entry.resourceId;
+        testId = entry.resourceId || 0;
       }
       return testId === currentActivityId;
     })?.custom.sequenceId;

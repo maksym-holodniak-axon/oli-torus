@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { create } from 'data/persistence/activity';
+import { cloneT } from '../../../../utils/common';
 import guid from '../../../../utils/guid';
 import ActivitiesSlice from '../../../delivery/store/features/activities/name';
 import {
@@ -105,7 +106,8 @@ export const addFlowchartScreen = createAsyncThunk(
 
       if (payload.fromScreenId) {
         // In this case, we need to edit that other screen's paths so it goes here.
-        const fromScreen = structuredClone(selectActivityById(rootState, payload.fromScreenId));
+
+        const fromScreen = cloneT(selectActivityById(rootState, payload.fromScreenId));
 
         if (fromScreen) {
           setGoToAlwaysPath(fromScreen, createResults.resourceId);

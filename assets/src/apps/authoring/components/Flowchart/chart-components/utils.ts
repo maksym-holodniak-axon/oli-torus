@@ -1,8 +1,8 @@
-import { Position, MarkerType } from 'reactflow';
+import { Position, MarkerType, Node } from 'reactflow';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
-function getNodeIntersection(intersectionNode, targetNode) {
+function getNodeIntersection(intersectionNode: Node, targetNode: Node) {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
   const {
     width: intersectionNodeWidth,
@@ -10,6 +10,14 @@ function getNodeIntersection(intersectionNode, targetNode) {
     positionAbsolute: intersectionNodePosition,
   } = intersectionNode;
   const targetPosition = targetNode.positionAbsolute;
+
+  if (
+    !intersectionNodeHeight ||
+    !intersectionNodeWidth ||
+    !intersectionNodePosition ||
+    !targetPosition
+  )
+    return { x: 0, y: 0 };
 
   const w = intersectionNodeWidth / 2;
   const h = intersectionNodeHeight / 2;
@@ -31,8 +39,11 @@ function getNodeIntersection(intersectionNode, targetNode) {
 }
 
 // returns the position (top,right,bottom or right) passed node compared to the intersection point
-function getEdgePosition(node, intersectionPoint) {
+function getEdgePosition(node: Node, intersectionPoint: { x: number; y: number }) {
   const n = { ...node.positionAbsolute, ...node };
+
+  if (!n.x || !n.y || !n.width || !n.height) return Position.Top;
+
   const nx = Math.round(n.x);
   const ny = Math.round(n.y);
   const px = Math.round(intersectionPoint.x);
@@ -55,7 +66,7 @@ function getEdgePosition(node, intersectionPoint) {
 }
 
 // returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getEdgeParams(source, target) {
+export function getEdgeParams(source: Node, target: Node) {
   const sourceIntersectionPoint = getNodeIntersection(source, target);
   const targetIntersectionPoint = getNodeIntersection(target, source);
 

@@ -78,43 +78,16 @@ export const SimplifiedRightMenu: React.FC<any> = () => {
   const [currentComponent, setCurrentComponent] = useState(null);
   const currentSequenceId = useSelector(selectCurrentSequenceId);
   const sequence = useSelector(selectSequence);
-  const currentSequence = findInSequence(sequence, currentSequenceId);
+  const currentSequence = findInSequence(sequence, currentSequenceId || '');
 
   const [currentActivity] = (currentActivityTree || []).slice(-1);
 
-  const [scrData, setScreenData] = useState();
-  const [scrSchema, setScreenSchema] = useState<JSONSchema7>();
-  const [scrUiSchema, setScreenUiSchema] = useState<UiSchema>();
-  const [questionBankData, setBankData] = useState<any>();
-  const [questionBankSchema, setBankSchema] = useState<JSONSchema7>();
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
 
   const selectedPartDef = useMemo(
     () => findPartByIdInActivity(currentActivity, currentPartSelection),
     [currentActivity, currentPartSelection],
   );
-
-  useEffect(() => {
-    if (!currentActivity) {
-      return;
-    }
-    /* console.log('CURRENT', { currentActivity, currentLesson }); */
-    setScreenData(
-      currentSequence?.custom.isBank
-        ? transformBankPropsModeltoSchema(currentActivity)
-        : transformScreenModeltoSchema(currentActivity),
-    );
-    setScreenSchema(currentSequence?.custom.isBank ? bankPropsSchema : screenSchema);
-    setScreenUiSchema(currentSequence?.custom.isBank ? BankPropsUiSchema : screenUiSchema);
-
-    setBankData(transformBankModeltoSchema(currentSequence as SequenceEntry<SequenceBank>));
-    setBankSchema(bankSchema);
-    const currentIds = currentActivityTree?.reduce(
-      (acc, activity) => acc.concat(activity.content.partsLayout.map((p: any) => p.id)),
-      [],
-    );
-    setExistingIds(currentIds);
-  }, [currentActivity, currentSequence]);
 
   // should probably wrap this in state too, but it doesn't change really
   const lessonData = transformLessonModel(currentLesson);

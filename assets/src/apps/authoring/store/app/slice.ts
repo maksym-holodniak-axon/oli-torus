@@ -1,6 +1,8 @@
 import { createSelector, createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
-import { AdaptiveRule } from 'apps/authoring/components/AdaptiveRulesList/AdaptiveRulesList';
-import { selectCurrentActivity } from 'apps/delivery/store/features/activities/slice';
+import {
+  IAdaptiveRule,
+  selectCurrentActivity,
+} from 'apps/delivery/store/features/activities/slice';
 import {
   savePartState,
   savePartStateToTree,
@@ -264,7 +266,7 @@ export const selectCurrentRule = createSelector(
   selectCurrentRuleId,
   selectCurrentActivity,
   (id: any, activity: any) =>
-    activity?.authoring.rules.find((rule: AdaptiveRule) => rule.id === id) ?? id,
+    activity?.authoring.rules.find((rule: IAdaptiveRule) => rule.id === id) ?? id,
 );
 
 export const selectCopiedPart = createSelector(selectState, (state: AppState) => state.copiedPart);

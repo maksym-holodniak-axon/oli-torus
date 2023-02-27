@@ -39,8 +39,12 @@ export interface IEvent {
   };
   type: string;
 }
-export interface IRule {
-  additionalScore: number;
+
+export interface InitState {
+  facts: any[];
+}
+export interface IAdaptiveRule {
+  additionalScore?: number;
   conditions: {
     any?: ICondition[];
     all?: ICondition[];
@@ -50,7 +54,7 @@ export interface IRule {
   default: boolean;
   disabled: boolean;
   event: IEvent;
-  forceProgress: boolean;
+  forceProgress?: boolean;
   id: string;
   name: string;
   priority: number;
@@ -61,7 +65,7 @@ export interface IActivity {
   resourceId?: number;
   activitySlug?: string;
   authoring?: {
-    rules?: IRule[];
+    rules?: IAdaptiveRule[];
     flowchart?: AuthoringFlowchartScreenData;
     [key: string]: any;
   };

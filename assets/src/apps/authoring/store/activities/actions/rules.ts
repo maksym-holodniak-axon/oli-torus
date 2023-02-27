@@ -2,16 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import guid from 'utils/guid';
 import ActivitiesSlice from '../../../../delivery/store/features/activities/name';
 import { createFeedback } from './createFeedback';
-import {
-  AdaptiveRule,
-  InitState,
-} from 'apps/authoring/components/AdaptiveRulesList/AdaptiveRulesList';
+
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import set from 'lodash/set';
 import cloneDeep from 'lodash/cloneDeep';
 import reduce from 'lodash/reduce';
 import has from 'lodash/has';
+import { InitState, IAdaptiveRule } from '../../../../delivery/store/features/activities/slice';
 
 const newId = (val: { [key: string]: any }) => {
   const idx = val?.indexOf(':');
@@ -35,7 +33,7 @@ function replace(source: any, key: string): any {
 
 export const duplicateRule = createAsyncThunk(
   `${ActivitiesSlice}/duplicateRule`,
-  async (payload: AdaptiveRule | InitState) => {
+  async (payload: IAdaptiveRule | InitState) => {
     const clone = cloneDeep(payload);
     const replaced = replace(clone, 'id');
     // console.log(replaced, payload);

@@ -20,20 +20,12 @@ export type IActivityReference = SequenceEntry<SequenceEntryChild> & {
   type: string;
   activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
 };
-// export interface IActivityReference {
-//   activitySlug: string;
-//   custom: any;
-//   type: string;
-//   resourceId?: number;
 
-//   activity_id?: string; // Below, we check for activity_id, activityId, and resourceId as the resource ID, I don't know the history of this, presumably legacy data?
-//   activityId?: string; // TODO: Fix this and parse all these into resourceId on load so our internal data store is sane.
-// }
 export interface IGroup {
   id?: number;
   type: 'group';
   layout: LayoutType;
-  children: IActivityReference[];
+  children: any[]; // TODO: activity types
 }
 
 export interface DeckLayoutGroup extends IGroup {
@@ -56,8 +48,13 @@ const slice: Slice<GroupsState> = createSlice({
       state.currentGroupId = action.payload.groupId;
     },
     setGroups(state, action: PayloadAction<{ groups: IGroup[] }>) {
+      // id?: number;
+      // type: 'group';
+      // layout: LayoutType;
+      // children: IActivityReference[];
+
       // groups aren't currently having resourceIds so we need to set id via index
-      const groups = action.payload.groups.map((group, index) => {
+      const groups: IGroup[] = action.payload.groups.map<IGroup>((group, index) => {
         const id = group.id !== undefined ? group.id : index + 1;
         // careful, doesn't handle nested groups
         const children = group.children.map((child) => {
@@ -71,7 +68,7 @@ const slice: Slice<GroupsState> = createSlice({
       });
       adapter.setAll(state, groups);
       // for now just select first one (dont even have a multi group concept yet)
-      state.currentGroupId = groups[0].id;
+      state.currentGroupId = groups[0].id || -1;
     },
     upsertGroup(state, action: PayloadAction<{ group: IGroup }>) {
       adapter.upsertOne(state, action.payload.group);
