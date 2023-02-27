@@ -10,7 +10,7 @@ import { Objective } from '../../../../data/content/objective';
 import { RightPanelTabs } from '../../components/RightMenu/RightMenu';
 import { saveActivity } from '../activities/actions/saveActivity';
 import { savePage } from '../page/actions/savePage';
-import { RootState } from '../rootReducer';
+import { AuthoringRootState } from '../rootReducer';
 import { acquireEditingLock } from './actions/locking';
 import { AppSlice } from './name';
 
@@ -28,7 +28,7 @@ interface PartComponentRegistration {
   authoring_script: string;
 }
 
-interface ActivityRegistration {
+export interface ActivityRegistration {
   id: string;
   slug: string;
   title: string;
@@ -213,7 +213,7 @@ export const {
   setShowScoringOverview,
 } = slice.actions;
 
-export const selectState = (state: RootState): AppState => state[AppSlice] as AppState;
+export const selectState = (state: AuthoringRootState): AppState => state[AppSlice] as AppState;
 export const selectPaths = createSelector(selectState, (state: AppState) => state.paths);
 export const selectProjectSlug = createSelector(
   selectState,

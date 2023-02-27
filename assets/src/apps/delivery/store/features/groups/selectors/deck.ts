@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from 'apps/delivery/store/rootReducer';
+import { DeliveryRootState } from 'apps/delivery/store/rootReducer';
 import { ActivityState } from 'components/activities/types';
 import { selectAllActivities, selectCurrentActivityId } from '../../activities/slice';
 import { selectActivityAttemptState } from '../../attempt/slice';
@@ -58,7 +58,7 @@ export const selectCurrentActivityTree = createSelector(
 );
 
 export const selectCurrentActivityTreeAttemptState = createSelector(
-  (state: RootState) => {
+  (state: DeliveryRootState) => {
     const currentTree = selectCurrentActivityTree(state);
     const attempts = currentTree?.map((t) => selectActivityAttemptState(state, t.resourceId));
     return [currentTree, attempts];

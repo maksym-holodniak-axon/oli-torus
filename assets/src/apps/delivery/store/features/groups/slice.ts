@@ -8,7 +8,6 @@ import {
   Slice,
 } from '@reduxjs/toolkit';
 
-import { RootState } from '../../rootReducer';
 import { SequenceEntry, SequenceEntryChild } from './actions/sequence';
 import GroupsSlice from './name';
 
@@ -82,7 +81,9 @@ const slice: Slice<GroupsState> = createSlice({
 
 export const { setCurrentGroupId, setGroups, upsertGroup } = slice.actions;
 
-export const selectState = (state: RootState): GroupsState => state[GroupsSlice] as GroupsState;
+export const selectState = (state: { [GroupsSlice]: GroupsState }): GroupsState =>
+  state[GroupsSlice] as GroupsState;
+
 export const { selectAll, selectById, selectTotal } = adapter.getSelectors(selectState);
 export const selectAllGroups = selectAll;
 export const selectCurrentGroup = createSelector(

@@ -11,7 +11,6 @@ import {
 import { ObjectiveMap } from 'data/content/activity';
 import { AuthoringFlowchartScreenData } from '../../../../authoring/components/Flowchart/flowchart-path-utils';
 
-import { RootState } from '../../rootReducer';
 import ActivitiesSlice from './name';
 export interface ActivityContent {
   custom?: any;
@@ -117,8 +116,9 @@ export const {
 } = slice.actions;
 
 // SELECTORS
-export const selectState = (state: RootState): ActivitiesState =>
+export const selectState = (state: { [ActivitiesSlice]: ActivitiesState }): ActivitiesState =>
   state[ActivitiesSlice] as ActivitiesState;
+
 export const selectCurrentActivityId = createSelector(
   selectState,
   (state) => state.currentActivityId,
