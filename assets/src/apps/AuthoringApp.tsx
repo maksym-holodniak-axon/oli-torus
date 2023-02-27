@@ -1,5 +1,5 @@
 import Authoring from './authoring/Authoring';
 import { registerApplication } from './app';
-import adaptiveStore from './authoring/store';
+import authoringStore from './authoring/store';
 
-registerApplication('Authoring', Authoring, adaptiveStore);
+registerApplication('Authoring', Authoring, authoringStore);

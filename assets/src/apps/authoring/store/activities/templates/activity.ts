@@ -1,8 +1,13 @@
-export const createActivityTemplate = () => ({
+import { IActivity } from '../../../../delivery/store/features/activities/slice';
+
+export type IActivityTemplate = Omit<IActivity, 'id'>;
+
+export const createActivityTemplate = (): IActivityTemplate => ({
   type: 'activity',
   typeSlug: 'oli_adaptive',
   title: '',
   objectives: { attached: [] },
+  tags: [],
   model: {
     authoring: {
       parts: [],

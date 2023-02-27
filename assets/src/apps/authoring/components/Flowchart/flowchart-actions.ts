@@ -7,15 +7,28 @@ import {
   upsertActivity,
 } from '../../../delivery/store/features/activities/slice';
 import { selectSequence } from '../../../delivery/store/features/groups/selectors/deck';
-import { selectAllGroups } from '../../../delivery/store/features/groups/slice';
+import {
+  selectAllGroups,
+  selectCurrentGroup,
+  upsertGroup,
+} from '../../../delivery/store/features/groups/slice';
 
 import { saveActivity } from '../../store/activities/actions/saveActivity';
-import { createActivityTemplate } from '../../store/activities/templates/activity';
-import { selectActivityTypes, selectProjectSlug, selectAppMode } from '../../store/app/slice';
+import {
+  createActivityTemplate,
+  IActivityTemplate,
+} from '../../store/activities/templates/activity';
+import {
+  selectActivityTypes,
+  selectProjectSlug,
+  selectAppMode,
+  ActivityRegistration,
+} from '../../store/app/slice';
 import { addSequenceItem } from '../../store/groups/layouts/deck/actions/addSequenceItem';
 import { setCurrentActivityFromSequence } from '../../store/groups/layouts/deck/actions/setCurrentActivityFromSequence';
 import { savePage } from '../../store/page/actions/savePage';
 import { selectState as selectPageState } from '../../store/page/slice';
+import { AuthoringRootState } from '../../store/rootReducer';
 import {
   AuthoringFlowchartScreenData,
   createAlwaysGoToPath,
@@ -24,8 +37,8 @@ import {
 } from './flowchart-path-utils';
 
 interface AddFlowchartScreenPayload {
-  fromScreenId?: string;
-  toScreenId?: string;
+  fromScreenId?: number;
+  toScreenId?: number;
   title?: string;
 }
 
@@ -40,7 +53,7 @@ export const addFlowchartScreen = createAsyncThunk(
   `${ActivitiesSlice}/addFlowchartScreen`,
   async (payload: AddFlowchartScreenPayload, { dispatch, getState }) => {
     try {
-      const rootState = getState() as any;
+      const rootState = getState() as AuthoringRootState;
       const appMode = selectAppMode(rootState);
       if (appMode !== 'flowchart') {
         throw new Error('addFlowchartScreen can only be called when appMode is flowchart');
@@ -54,7 +67,7 @@ export const addFlowchartScreen = createAsyncThunk(
 
       const { title = 'New Screen' } = payload;
 
-      const activity: any = {
+      const activity: IActivityTemplate = {
         ...createActivityTemplate(),
         title,
         width: currentLesson.custom.defaultScreenWidth,
@@ -95,7 +108,7 @@ export const addFlowchartScreen = createAsyncThunk(
         const fromScreen = structuredClone(selectActivityById(rootState, payload.fromScreenId));
 
         if (fromScreen) {
-          setGoToAlwaysPath(fromScreen, String(createResults.resourceId));
+          setGoToAlwaysPath(fromScreen, createResults.resourceId);
           // TODO - these two should be a single operation?
           await dispatch(upsertActivity({ activity: fromScreen }));
           dispatch(saveActivity({ activity: fromScreen, undoable: false, immediate: true }));
@@ -108,7 +121,9 @@ export const addFlowchartScreen = createAsyncThunk(
       activity.resourceId = activity.activity_id;
       activity.activitySlug = createResults.revisionSlug;
 
-      activity.activityType = activityTypes.find((type: any) => type.slug === activity.typeSlug);
+      activity.activityType = activityTypes.find(
+        (type: ActivityRegistration) => type.slug === activity.typeSlug,
+      );
 
       const sequenceEntry: any = {
         type: 'activity-reference',
@@ -153,5 +168,25 @@ export const addFlowchartScreen = createAsyncThunk(
       console.error(e);
       throw e;
     }
+  },
+);
+
+interface DeleteFlowchartScreenPayload {
+  screenId: number;
+}
+
+export const deleteFlowchartScreen = createAsyncThunk(
+  `${ActivitiesSlice}/addFlowchartScreen`,
+  async (payload: DeleteFlowchartScreenPayload, { dispatch, getState }) => {
+    const { screenId } = payload;
+    const rootState = getState() as AuthoringRootState;
+    const currentGroup = selectCurrentGroup(rootState);
+    const sequence = selectSequence(rootState);
+    const newGroup = {
+      ...currentGroup,
+      children: sequence.filter((seq) => seq.resourceId !== screenId),
+    };
+    dispatch(upsertGroup({ group: newGroup }));
+    await dispatch(savePage({ undoable: false }));
   },
 );

@@ -1,10 +1,5 @@
 import { MarkerType } from 'reactflow';
-import {
-  IAction,
-  IActivity,
-  IEvent,
-  IRule,
-} from '../../../delivery/store/features/activities/slice';
+import { IActivity } from '../../../delivery/store/features/activities/slice';
 import { IActivityReference } from '../../../delivery/store/features/groups/slice';
 import { buildEdgesForActivity } from './flowchart-path-utils';
 
@@ -22,15 +17,12 @@ export interface FlowchartScreenNodeData {
 }
 
 export interface FlowchartPlaceholderNodeData {
-  fromScreenId: string;
+  fromScreenId: number;
 }
 
-const markerEnd = {
-  color: '#2563eb',
-  type: MarkerType.Arrow,
-};
 export interface FlowchartScreenNode {
   id: string;
+  resourceId: number;
   position: { x: number; y: number };
   data: FlowchartScreenNodeData;
   type: 'screen';
@@ -70,6 +62,7 @@ const onlyActivityReferences = (item: any) => item.type === 'activity-reference'
 export const sequenceToNodes = (children: any[]): FlowchartNode[] =>
   children.filter(onlyActivityReferences).map((item, index) => ({
     id: String(item.resourceId),
+    resourceId: item.resourceId,
     type: 'screen',
     position: { x: index * 200 + 50, y: 50 },
     data: {
@@ -77,40 +70,6 @@ export const sequenceToNodes = (children: any[]): FlowchartNode[] =>
       label: 'TEST ITEM',
     },
   }));
-
-// const isNavigationRule = (rule: IRule): boolean => isNavigationEvent(rule.event);
-// const isNavigationEvent = (event: IEvent): boolean =>
-//   !!event.params.actions.find((action: IAction) => action.type === 'navigation');
-
-const sequenceIdToResourceId = (sequenceId: string, activities: IActivityReference[]) => {
-  const act = activities.find((activity) => activity.custom.sequenceId === sequenceId)?.resourceId;
-  return act ? String(act) : '';
-};
-
-// Introduced a new "paths" authorind data structure instead of reading rules directly
-// const generateEdgesFromRules = (
-//   rules: IRule[],
-//   source: string,
-//   activityRefs: IActivityReference[],
-// ): FlowchartEdge[] => {
-//   const edges: FlowchartEdge[] = [];
-//   rules.filter(isNavigationRule).forEach((rule: IRule) => {
-//     rule.event.params.actions.forEach((action: IAction) => {
-//       const targetSequenceId = action.params.target;
-//       const target = sequenceIdToResourceId(targetSequenceId, activityRefs);
-//       if (source && target) {
-//         edges.push({
-//           id: rule.id,
-//           source: String(source),
-//           target,
-//           type: 'floating',
-//           markerEnd,
-//         });
-//       }
-//     });
-//   });
-//   return edges;
-// };
 
 export const buildEdges = (activities: IActivity[]): FlowchartEdge[] => {
   return activities.map(buildEdgesForActivity).flat();
@@ -126,7 +85,7 @@ export const addPlaceholders = (
         {
           id: 'start-placeholder',
           position: { x: 0, y: 0 },
-          data: { fromScreenId: '' },
+          data: { fromScreenId: -1 },
           type: 'placeholder',
         },
       ],
@@ -139,7 +98,7 @@ export const addPlaceholders = (
     {
       id: 'end-placeholder',
       position: { x: 0, y: 0 },
-      data: { fromScreenId: nodes[nodes.length - 1].id },
+      data: { fromScreenId: (nodes[nodes.length - 1] as FlowchartScreenNode).resourceId },
       type: 'placeholder',
     },
   ];

@@ -14,7 +14,6 @@ import { PlaceholderEdge } from './chart-components/PlaceholderEdge';
 interface FlowchartComponentProps {
   nodes: FlowchartNode[];
   edges: FlowchartEdge[];
-  onCreateNode?: (fromId: string, toId?: string) => void;
 }
 
 const NodeTypes = {
@@ -27,18 +26,7 @@ const EdgeTypes = {
   placeholder: PlaceholderEdge,
 };
 
-export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({
-  onCreateNode,
-  ...props
-}) => {
-  const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: FlowchartNode) => {
-      // When you click on a placeholder node, we'll signal up to the parent to create a new node at that location
-      node.type === 'placeholder' && onCreateNode && onCreateNode(node.data.fromScreenId);
-    },
-    [onCreateNode],
-  );
-
+export const FlowchartComponent: React.FC<FlowchartComponentProps> = (props) => {
   const [nodes, edges] = addPlaceholders(props.nodes, props.edges);
 
   const layout = layoutFlowchart(nodes, edges);
@@ -51,7 +39,6 @@ export const FlowchartComponent: React.FC<FlowchartComponentProps> = ({
       nodes={layout.nodes}
       edges={edges}
       connectionLineComponent={FloatingConnectionLine}
-      onNodeClick={onNodeClick}
       proOptions={{ hideAttribution: true }}
     >
       {/* <MiniMap /> */}

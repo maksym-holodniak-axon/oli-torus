@@ -27,7 +27,7 @@ interface BasePath {
   ruleId: string | null;
 }
 interface DestinationPath extends BasePath {
-  destinationScreenId: string | null;
+  destinationScreenId: number | null;
 }
 
 interface ComponentPath extends DestinationPath {
@@ -118,7 +118,7 @@ export const removeEndOfActivityPath = (screen: IActivity) => {
   screen.authoring!.flowchart!.paths = paths.filter((path) => path.type !== 'end-of-activity');
 };
 
-export const setGoToAlwaysPath = (screen: IActivity, destinationScreenId: string) => {
+export const setGoToAlwaysPath = (screen: IActivity, destinationScreenId: number) => {
   const paths = getPathsFromScreen(screen);
   // If there's already a go-to-always path, update it.
   // If not, add a new one.
@@ -132,7 +132,7 @@ export const setGoToAlwaysPath = (screen: IActivity, destinationScreenId: string
   removeEndOfActivityPath(screen);
 };
 
-export const createAlwaysGoToPath = (destinationScreenId: string): AlwaysGoToPath => ({
+export const createAlwaysGoToPath = (destinationScreenId: number): AlwaysGoToPath => ({
   type: 'always-go-to',
   id: guid(),
   ruleId: null,
