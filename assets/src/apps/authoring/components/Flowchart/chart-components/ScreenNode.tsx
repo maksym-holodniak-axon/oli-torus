@@ -27,10 +27,10 @@ const dontDoNothing = () => {
 export const ScreenNodeBody: React.FC<NodeProps> = ({ data }) => {
   const { onAddScreen, onDeleteScreen } = useContext(FlowchartEventContext);
   return (
-    <div className="flex-col flex align-middle justify-center h-[156px]">
+    <div className="flowchart-node">
       <div className="inline text-center">{data.custom.sequenceName}</div>
-      <div className="p-4 text-center border-2 w-32 h-28 bg-white text-delivery-body-dark flex justify-center align-middle flex-col">
-        <div className="flex flex-row justify-center gap-1">
+      <div className="node-box">
+        <div className="button-bar">
           <ScreenButton onClick={() => onAddScreen({ prevNodeId: data.resourceId })}>
             <Icon icon="plus" />
           </ScreenButton>

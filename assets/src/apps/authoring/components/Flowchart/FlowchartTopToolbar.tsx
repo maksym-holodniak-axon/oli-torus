@@ -8,11 +8,11 @@ export const FlowchartTopToolbar: React.FC<FlowchartTopToolbarProps> = ({
   onSwitchToAdvancedMode,
 }) => {
   return (
-    <div className="flex flex-row justify-between items-center bg-delivery-body p-2 h-40 border-b-2 dark:text-black">
+    <div className="top-toolbar">
       Toolbar Content Goes here.
-      <Button variant="primary" onClick={onSwitchToAdvancedMode}>
+      <button className="flowchart-button" onClick={onSwitchToAdvancedMode}>
         Debug Advanced mode
-      </Button>
+      </button>
     </div>
   );
 };

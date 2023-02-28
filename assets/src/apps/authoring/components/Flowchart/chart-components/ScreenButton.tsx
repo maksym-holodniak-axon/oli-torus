@@ -7,10 +7,7 @@ interface ScreenButtonProps {
 
 export const ScreenButton: React.FC<ScreenButtonProps> = ({ children, onClick }) => {
   return (
-    <button
-      className="bg-delivery-primary-50 hover:bg-delivery-primary text-delivery-body active:bg-delivery-primary-600 px-2 rounded-md"
-      onClick={onClick}
-    >
+    <button className="screen-button" onClick={onClick}>
       {children}
     </button>
   );

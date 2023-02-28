@@ -15,7 +15,6 @@ const AuthoringContainer: React.FC<AuthoringProps> = (props: AuthoringProps) => 
       />
 
       <link id="styles" rel="stylesheet" href="/css/styles.css" />
-      <link id="styles" rel="stylesheet" href="/css/app.css" />
 
       <link
         rel="stylesheet"

@@ -59,9 +59,9 @@ export const FlowchartEditor = () => {
 
   return (
     <FlowchartEventContext.Provider value={events}>
-      <div className="fixed bottom-0 right-0 top-[66px] left-[66px] z-[1] bg-delivery-body flex flex-row">
+      <div className="flowchart-editor">
         <FlowchartSidebar />
-        <div className="flex flex-col w-full h-full">
+        <div className="flowchart-right">
           <FlowchartTopToolbar onSwitchToAdvancedMode={onAdvanced} />
           <FlowchartComponent nodes={nodes} edges={edges} />
         </div>

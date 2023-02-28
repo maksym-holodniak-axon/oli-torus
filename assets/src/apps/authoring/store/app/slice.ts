@@ -266,7 +266,11 @@ export const selectCurrentRule = createSelector(
   selectCurrentRuleId,
   selectCurrentActivity,
   (id: any, activity: any) => {
-    return activity?.authoring?.rules?.find((rule: IAdaptiveRule) => rule.id === id) ?? id;
+    return (
+      activity?.authoring?.rules
+        ?.filter((rule: any) => !!rule)
+        .find((rule: IAdaptiveRule) => rule.id === id) ?? id
+    );
   },
 );
 
