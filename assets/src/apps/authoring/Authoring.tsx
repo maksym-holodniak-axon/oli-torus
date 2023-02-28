@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { isFirefox } from 'utils/browser';
 import DiagnosticsWindow from './components/Modal/DiagnosticsWindow';
@@ -123,6 +124,7 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
     left?: boolean;
     bottom?: boolean;
   }) => {
+    console.log('handlePanelStateChange', { top, right, left, bottom });
     dispatch(setPanelState({ top, right, left, bottom }));
   };
 
@@ -226,7 +228,6 @@ const Authoring: React.FC<AuthoringProps> = (props: AuthoringProps) => {
     <AppsignalContext.Provider value={appsignal}>
       <ErrorBoundary>
         <ModalDisplay />
-
         {isLoading && (
           <div id="aa-loading">
             <div className="loader spinner-border text-primary" role="status">

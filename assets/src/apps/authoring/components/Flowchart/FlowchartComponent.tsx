@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
-import ReactFlow, { Controls, Background, MarkerType } from 'reactflow';
-// import 'reactflow/dist/style.css';
-import './chart-components/flowchart.css';
+import React from 'react';
+import ReactFlow, { Controls, Background } from 'reactflow';
+
 import { layoutFlowchart } from './flowchart-layout';
 
 import { addPlaceholders, FlowchartEdge, FlowchartNode } from './flowchart-utils';

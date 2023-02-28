@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { BottomPanel } from './BottomPanel';
 import { AdaptivityEditor } from './components/AdaptivityEditor/AdaptivityEditor';
 import { InitStateEditor } from './components/AdaptivityEditor/InitStateEditor';
@@ -25,30 +25,37 @@ export const AuthoringExpertPageEditor: React.FC<AuthoringPageEditorProps> = ({
   panelState,
   handlePanelStateChange,
   currentRule,
-}) => (
-  <div id="advanced-authoring" className={`advanced-authoring`}>
-    <HeaderNav panelState={panelState} isVisible={panelState.top} />
-    <SidePanel
-      position="left"
-      panelState={panelState}
-      onToggle={() => handlePanelStateChange({ left: !panelState.left })}
-    >
-      <LeftMenu />
-    </SidePanel>
-    <EditingCanvas />
-    <BottomPanel
-      panelState={panelState}
-      onToggle={() => handlePanelStateChange({ bottom: !panelState.bottom })}
-    >
-      {currentRule === 'initState' && <InitStateEditor />}
-      {currentRule !== 'initState' && <AdaptivityEditor />}
-    </BottomPanel>
-    <SidePanel
-      position="right"
-      panelState={panelState}
-      onToggle={() => handlePanelStateChange({ right: !panelState.right })}
-    >
-      <RightMenu />
-    </SidePanel>
-  </div>
-);
+}) => {
+  const authoringContainer = useRef<HTMLDivElement>(null);
+  return (
+    <div id="advanced-authoring" className={`advanced-authoring`} ref={authoringContainer}>
+      <HeaderNav
+        authoringContainer={authoringContainer}
+        panelState={panelState}
+        isVisible={panelState.top}
+      />
+      <SidePanel
+        position="left"
+        panelState={panelState}
+        onToggle={() => handlePanelStateChange({ left: !panelState.left })}
+      >
+        <LeftMenu />
+      </SidePanel>
+      <EditingCanvas />
+      <BottomPanel
+        panelState={panelState}
+        onToggle={() => handlePanelStateChange({ bottom: !panelState.bottom })}
+      >
+        {currentRule === 'initState' && <InitStateEditor authoringContainer={authoringContainer} />}
+        {currentRule !== 'initState' && <AdaptivityEditor />}
+      </BottomPanel>
+      <SidePanel
+        position="right"
+        panelState={panelState}
+        onToggle={() => handlePanelStateChange({ right: !panelState.right })}
+      >
+        <RightMenu />
+      </SidePanel>
+    </div>
+  );
+};

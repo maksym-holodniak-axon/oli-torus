@@ -265,8 +265,9 @@ export const selectCurrentRuleId = createSelector(
 export const selectCurrentRule = createSelector(
   selectCurrentRuleId,
   selectCurrentActivity,
-  (id: any, activity: any) =>
-    activity?.authoring.rules.find((rule: IAdaptiveRule) => rule.id === id) ?? id,
+  (id: any, activity: any) => {
+    return activity?.authoring?.rules?.find((rule: IAdaptiveRule) => rule.id === id) ?? id;
+  },
 );
 
 export const selectCopiedPart = createSelector(selectState, (state: AppState) => state.copiedPart);
