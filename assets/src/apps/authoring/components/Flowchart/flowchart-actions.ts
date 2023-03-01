@@ -1,9 +1,10 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, Dispatch } from '@reduxjs/toolkit';
 import { create } from 'data/persistence/activity';
-import { cloneT } from '../../../../utils/common';
+import { clone, cloneT } from '../../../../utils/common';
 import guid from '../../../../utils/guid';
 import ActivitiesSlice from '../../../delivery/store/features/activities/name';
 import {
+  IActivity,
   selectActivityById,
   upsertActivity,
 } from '../../../delivery/store/features/activities/slice';
@@ -14,7 +15,7 @@ import {
   upsertGroup,
 } from '../../../delivery/store/features/groups/slice';
 
-import { saveActivity } from '../../store/activities/actions/saveActivity';
+import { bulkSaveActivity, saveActivity } from '../../store/activities/actions/saveActivity';
 import {
   createActivityTemplate,
   IActivityTemplate,
@@ -31,11 +32,13 @@ import { savePage } from '../../store/page/actions/savePage';
 import { selectState as selectPageState } from '../../store/page/slice';
 import { AuthoringRootState } from '../../store/rootReducer';
 import {
+  AllPaths,
   AuthoringFlowchartScreenData,
   createAlwaysGoToPath,
   createEndOfActivityPath,
   setGoToAlwaysPath,
 } from './flowchart-path-utils';
+import { selectDefaultDestination, selectPathsToScreen } from './flowchart-selectors';
 
 interface AddFlowchartScreenPayload {
   fromScreenId?: number;
@@ -85,12 +88,6 @@ export const addFlowchartScreen = createAsyncThunk(
       } else {
         flowchartData.paths.push(createEndOfActivityPath());
       }
-
-      // const { payload: defaultRule } = await dispatch(
-      //   createCorrectRule({ isDefault: true, label: 'default' }),
-      // );
-
-      // activity.model.authoring.rules.push(defaultRule);
 
       const createResults = await create(
         projectSlug,
@@ -182,13 +179,63 @@ export const deleteFlowchartScreen = createAsyncThunk(
   async (payload: DeleteFlowchartScreenPayload, { dispatch, getState }) => {
     const { screenId } = payload;
     const rootState = getState() as AuthoringRootState;
-    const currentGroup = selectCurrentGroup(rootState);
-    const sequence = selectSequence(rootState);
-    const newGroup = {
-      ...currentGroup,
-      children: sequence.filter((seq) => seq.resourceId !== screenId),
-    };
-    dispatch(upsertGroup({ group: newGroup }));
+
+    /* imagine:  [a] -> [b] -> [c]
+      If we delete screen [b], we want [a] -> [c]
+    */
+
+    await dispatch(removePathsToScreen(screenId, rootState));
+    dispatch(removeScreenGromGroup(screenId, rootState));
+
     await dispatch(savePage({ undoable: false }));
   },
 );
+
+const isActivity = (a: IActivity | undefined): a is IActivity => !!a;
+
+const isNotToDestination = (destinationId: number) => (path: AllPaths) =>
+  !('destinationScreenId' in path) || path.destinationScreenId !== destinationId;
+
+const removeDestinationPaths =
+  (screenId: number, nextScreenId: number | null) => (original: IActivity) => {
+    const activity = cloneT(original);
+    if (!activity.authoring?.flowchart) return original;
+
+    activity.authoring.flowchart.paths = activity.authoring.flowchart.paths.filter(
+      isNotToDestination(screenId),
+    );
+
+    if (activity.authoring.flowchart.paths.length === 0) {
+      // If there is no path out of this screen, either point to the end of the lesson, or a good next guess at a screen
+      if (nextScreenId) {
+        setGoToAlwaysPath(activity, nextScreenId);
+      } else {
+        activity.authoring.flowchart.paths = [createEndOfActivityPath()];
+      }
+    }
+
+    return activity;
+  };
+
+const removePathsToScreen = (screenId: number, rootState: AuthoringRootState) => {
+  const inputPaths = selectPathsToScreen(rootState, screenId);
+  const screenIdsToModify = new Set(inputPaths.map((p) => p.sourceScreenId));
+  const screensToModify = Array.from(screenIdsToModify)
+    .map((id) => selectActivityById(rootState, id))
+    .filter(isActivity);
+
+  const defaultNextScreen = selectDefaultDestination(rootState, screenId);
+  const modifiedScreens = screensToModify.map(removeDestinationPaths(screenId, defaultNextScreen));
+
+  return bulkSaveActivity({ activities: modifiedScreens });
+};
+
+const removeScreenGromGroup = (screenId: number, rootState: AuthoringRootState) => {
+  const currentGroup = selectCurrentGroup(rootState);
+  const sequence = selectSequence(rootState);
+  const newGroup = {
+    ...currentGroup,
+    children: sequence.filter((seq) => seq.resourceId !== screenId),
+  };
+  return upsertGroup({ group: newGroup });
+};

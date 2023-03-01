@@ -40,13 +40,21 @@
     align-items: center;
     background-color: #999;
     padding: 8px;
-    height: 240px;
+    height: 200px;
     border-bottom: 2px solid #e2e8f0;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
   .flowchart-sidebar {
-    width: 300px;
+    width: 275px;
     height: 100%;
     background-color: #777;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 1rem;
+    pre {
+      font-size: 10px;
+    }
   }
   .flowchart-node {
     // align-middle justify-center flex h-[156px] flex-col
@@ -54,6 +62,7 @@
     flex-direction: column;
     justify-content: center;
     height: 156px;
+
     .node-box {
       // p-4 text-center border-2 w-32 h-28 bg-white text-delivery-body-dark flex justify-center align-middle flex-col
       padding: 8px;
@@ -65,6 +74,10 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
+      &.node-selected {
+        border: 2px solid #5b1eea;
+      }
       .button-bar {
         // flex flex-row justify-center gap-1
         display: flex;
@@ -206,12 +219,10 @@
   pointer-events: all;
   transform-origin: 0 0;
   box-sizing: border-box;
-  cursor: -webkit-grab;
-  cursor: grab;
+
+  cursor: default;
 }
 .react-flow__node.dragging {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
 }
 .react-flow__nodesselection {
   z-index: 3;
@@ -221,8 +232,6 @@
 .react-flow__nodesselection-rect {
   position: absolute;
   pointer-events: all;
-  cursor: -webkit-grab;
-  cursor: grab;
 }
 .react-flow__handle {
   position: absolute;

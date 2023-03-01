@@ -1,6 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllActivities } from '../../../delivery/store/features/activities/slice';
+import {
+  selectAllActivities,
+  setCurrentActivityId,
+} from '../../../delivery/store/features/activities/slice';
 
 import { selectSequence } from '../../../delivery/store/features/groups/selectors/deck';
 
@@ -45,6 +48,13 @@ export const FlowchartEditor = () => {
     [dispatch],
   );
 
+  const onSelectScreen = useCallback(
+    (screenResourceId: number) => {
+      dispatch(setCurrentActivityId({ activityId: screenResourceId }));
+    },
+    [dispatch],
+  );
+
   const onAdvanced = () => {
     dispatch(debugAppMode({ mode: 'expert' }));
   };
@@ -53,6 +63,7 @@ export const FlowchartEditor = () => {
     () => ({
       onAddScreen,
       onDeleteScreen,
+      onSelectScreen,
     }),
     [onAddScreen, onDeleteScreen],
   );

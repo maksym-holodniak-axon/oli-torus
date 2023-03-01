@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Handle, Position } from 'reactflow';
 import { Icon } from '../../../../../components/misc/Icon';
+import { selectCurrentActivityId } from '../../../../delivery/store/features/activities/slice';
 import { FlowchartScreenNodeData } from '../flowchart-utils';
 import { FlowchartEventContext } from '../FlowchartEventContext';
 import { ScreenButton } from './ScreenButton';
@@ -25,11 +27,15 @@ const dontDoNothing = () => {
 };
 // Just the interior of the node, useful to have separate for storybook
 export const ScreenNodeBody: React.FC<NodeProps> = ({ data }) => {
-  const { onAddScreen, onDeleteScreen } = useContext(FlowchartEventContext);
+  const { onAddScreen, onDeleteScreen, onSelectScreen } = useContext(FlowchartEventContext);
+  const selectedId = useSelector(selectCurrentActivityId);
+  const selected = selectedId === data.resourceId;
+  const className = `node-box ${selected ? 'node-selected' : ''}`;
+
   return (
     <div className="flowchart-node">
       <div className="inline text-center">{data.custom.sequenceName}</div>
-      <div className="node-box">
+      <div className={className} onClick={() => onSelectScreen(data.resourceId)}>
         <div className="button-bar">
           <ScreenButton onClick={() => onAddScreen({ prevNodeId: data.resourceId })}>
             <Icon icon="plus" />

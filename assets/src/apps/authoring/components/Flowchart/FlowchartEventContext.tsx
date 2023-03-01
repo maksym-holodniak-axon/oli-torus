@@ -13,9 +13,11 @@ export interface FlowchartAddScreenParams {
 export interface FlowchartEventContextProps {
   onAddScreen: (p: FlowchartAddScreenParams) => void;
   onDeleteScreen: (nodeId: number) => void;
+  onSelectScreen: (nodeId: number) => void;
 }
 
 export const FlowchartEventContext = React.createContext<FlowchartEventContextProps>({
   onAddScreen: () => {},
   onDeleteScreen: () => {},
+  onSelectScreen: () => {},
 });
