@@ -384,7 +384,7 @@ defmodule Oli.Delivery.Attempts.ActivityLifecycle.Evaluate do
       _ -> get_latest_activity_attempts(resource_attempt.id)
     end
 
-    Enum.reduce_while(activity_attempts
+    Enum.reduce_while(activity_attempts,
       {0, [], [], []},
       fn activity_attempt,
          {
