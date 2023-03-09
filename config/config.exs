@@ -116,6 +116,11 @@ config :oli, Oli.Repo, migration_timestamps: [type: :timestamptz]
 config :oli, Oli.Publishing, refresh_adapter: Oli.Publishing.PartMappingRefreshAsync
 config :oli, :lti_access_token_provider, provider: Oli.Lti.AccessTokenLibrary
 
+config :oli, :upgrade_experiment_provider,
+  url: System.get_env("UPGRADE_EXPERIMENT_PROVIDER_URL"),
+  user_url: System.get_env("UPGRADE_EXPERIMENT_USER_URL"),
+  api_token: System.get_env("UPGRADE_EXPERIMENT_PROVIDER_API_TOKEN")
+
 # Configures the endpoint
 config :oli, OliWeb.Endpoint,
   live_view: [signing_salt: System.get_env("LIVE_VIEW_SALT", "LIVE_VIEW_SALT")],
@@ -240,6 +245,21 @@ config :libcluster,
       strategy: Module.concat([System.get_env("LIBCLUSTER_STRATEGY", "Cluster.Strategy.Gossip")])
     ]
   ]
+
+config :tailwind,
+  version: "3.2.4",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/css/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
+
+config :ex_cldr,
+  default_locale: "en",
+  default_backend: Oli.Cldr
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

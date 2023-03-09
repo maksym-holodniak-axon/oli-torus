@@ -19,6 +19,7 @@ import {
 import { LayoutType, selectCurrentGroup } from './store/features/groups/slice';
 import { loadInitialPageState } from './store/features/page/actions/loadInitialPageState';
 import { selectScreenIdleExpirationTime } from './store/features/page/slice';
+
 export interface DeliveryProps {
   resourceId: number;
   sectionSlug: string;
@@ -70,7 +71,6 @@ const Delivery: React.FC<DeliveryProps> = ({
   if (currentGroup?.layout === LayoutType.DECK) {
     LayoutView = DeckLayoutView;
   }
-  console.log({ screenIdleTimeOutInSeconds });
 
   const screenIdleWarningTime = screenIdleTimeOutInSeconds * 1000 - 300000;
   useEffect(() => {
@@ -146,10 +146,4 @@ const Delivery: React.FC<DeliveryProps> = ({
   );
 };
 
-const ReduxApp: React.FC<DeliveryProps> = (props) => (
-  <Provider store={store}>
-    <Delivery {...props} />
-  </Provider>
-);
-
-export default ReduxApp;
+export default Delivery;
