@@ -10,7 +10,7 @@
       <div class="label mt-1">Create</div>
     </button>
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item btn btn-lg" href="<%= Routes.project_path(@conn, :overview, @project) %>">Overview</a></li>
+      <li><a class="dropdown-item btn btn-lg" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.OverviewLive, @project.slug) %>">Overview</a></li>
       <li><a class="dropdown-item btn btn-lg" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.ObjectivesLive.Objectives, @project.slug) %>">Objectives</a></li>
       <li><a class="dropdown-item btn btn-lg" href="<%= Routes.activity_bank_path(@conn, :index, @project.slug) %>">Activity Bank</a></li>
       <li><a class="dropdown-item btn btn-lg" href="<%= Routes.bibliography_path(@conn, :index, @project.slug) %>">Bibliography</a></li>
@@ -32,9 +32,9 @@
       <div class="label mt-1">Publish</div>
     </button>
     <div class="dropdown-menu">
-      <a class="dropdown-item" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Qa.QaLive, @project.slug) %>">Review</a>
-      <a class="dropdown-item" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Products.ProductsView, @project.slug) %>">Products</a>
-      <a class="dropdown-item" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.PublishView, @project.slug) %>">Publish</a>
+      <a class="dropdown-item btn btn-lg" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Qa.QaLive, @project.slug) %>">Review</a>
+      <a class="dropdown-item btn btn-lg" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.PublishView, @project.slug) %>">Publish</a>
+      <a class="dropdown-item btn btn-lg" href="<%= Routes.live_path(OliWeb.Endpoint, OliWeb.Products.ProductsView, @project.slug) %>">Products</a>
     </div>
   </div>
 

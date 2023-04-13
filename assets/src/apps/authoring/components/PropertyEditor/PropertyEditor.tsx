@@ -10,6 +10,11 @@ import { TorusImageBrowser } from './custom/TorusImageBrowser';
 import ScreenDropdownTemplate from './custom/ScreenDropdownTemplate';
 import { TorusAudioBrowser } from './custom/TorusAudioBrowser';
 import { TorusVideoBrowser } from './custom/TorusVideoBrowser';
+import { OptionsCorrectPicker } from './custom/OptionsCorrectPicker';
+import { OptionsCustomErrorFeedbackAuthoring } from './custom/OptionsCustomErrorFeedbackAuthoring';
+import { MCQCorrectAnswerEditor } from './custom/MCQCorrectAnswerEditor';
+import { MCQOptionsEditor } from './custom/MCQOptionsEditor';
+import { MCQCustomErrorFeedbackAuthoring } from './custom/MCQCustomErrorFeedbackAuthoring';
 
 interface PropertyEditorProps {
   schema: JSONSchema7;
@@ -26,6 +31,11 @@ const widgets: any = {
   TorusImageBrowser: TorusImageBrowser,
   TorusAudioBrowser: TorusAudioBrowser,
   TorusVideoBrowser: TorusVideoBrowser,
+  OptionsCorrectPicker: OptionsCorrectPicker,
+  OptionsCustomErrorFeedbackAuthoring: OptionsCustomErrorFeedbackAuthoring,
+  MCQCorrectAnswerEditor: MCQCorrectAnswerEditor,
+  MCQOptionsEditor: MCQOptionsEditor,
+  MCQCustomErrorFeedbackAuthoring: MCQCustomErrorFeedbackAuthoring,
 };
 
 const PropertyEditor: React.FC<PropertyEditorProps> = ({
@@ -57,22 +67,25 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
         const updatedData = e.formData;
         const changedProp = diff(formData, updatedData);
         const changedPropType = findDiffType(changedProp);
+
         const shouldTriggerChange =
           typeof triggerOnChange === 'boolean'
             ? triggerOnChange
             : Object.keys(changedProp).some((v) => triggerOnChange.indexOf(v) > -1);
-
         setFormData(updatedData);
+
+        //console.info('ONCHANGE', { shouldTriggerChange, changedPropType, changedProp });
+
         if (shouldTriggerChange || changedPropType === 'boolean') {
           // because 'id' is used to maintain selection, it MUST be onBlur or else bad things happen
           if (updatedData.id === formData.id) {
-            // console.log('ONCHANGE P EDITOR TRIGGERED', {
-            //   e,
-            //   updatedData,
-            //   changedProp,
-            //   changedPropType,
-            //   triggerOnChange,
-            // });
+            console.log('ONCHANGE P EDITOR TRIGGERED', {
+              e,
+              updatedData,
+              changedProp,
+              changedPropType,
+              triggerOnChange,
+            });
             onChangeHandler(updatedData);
           }
         }
@@ -81,6 +94,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
         // key will look like root_Position_x
         // changed will be the new value
         // formData will be the current state of the form
+        console.info('ONBLUR');
         const dotPath = key.replace(/_/g, '.').replace('root.', '');
         const [newValue] = at(value as any, dotPath);
         // console.log('ONBLUR', { key, changed, formData, value, dotPath, newValue });
@@ -88,6 +102,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
         // and the stakes here are not that high, we are just trying to avoid saving so many times
         if (newValue != changed) {
           // console.log('ONBLUR TRIGGER SAVE');
+
           onChangeHandler(formData);
         }
       }}

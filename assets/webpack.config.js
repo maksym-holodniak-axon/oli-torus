@@ -26,10 +26,14 @@ const populateEntries = () => {
     bibliography: ['./src/apps/BibliographyApp.tsx'],
     authoring: ['./src/apps/AuthoringApp.tsx'],
     delivery: ['./src/apps/DeliveryApp.tsx'],
+    scheduler: ['./src/apps/SchedulerApp.tsx'],
     stripeclient: ['./src/payment/stripe/client.ts'],
+    cashnetclient: ['./src/payment/cashnet/client.ts'],
     timezone: ['./src/phoenix/timezone.ts'],
     dark: ['./src/phoenix/dark.ts'],
     keepalive: ['./src/phoenix/keep-alive.ts'],
+    delivery_adaptive_themes_default_light: ['./styles/adaptive/light.scss'],
+    delivery_adaptive_themes_flowchart: ['./styles/adaptive/flowchart.scss'],
   };
 
   const manifests = glob.sync('./src/components/activities/*/manifest.json', {});
@@ -136,7 +140,11 @@ module.exports = (env, options) => ({
       apps: path.resolve(__dirname, 'src/apps'),
       adaptivity: path.resolve(__dirname, 'src/adaptivity'),
     },
-    fallback: { vm: require.resolve('vm-browserify') },
+    fallback: {
+      vm: require.resolve('vm-browserify'),
+      'react/jsx-runtime': 'react/jsx-runtime.js',
+      'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
+    },
   },
   module: {
     rules: [

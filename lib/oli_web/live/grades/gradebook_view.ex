@@ -51,13 +51,8 @@ defmodule OliWeb.Grades.GradebookView do
         Mount.handle_error(socket, {:error, e})
 
       {type, _, section} ->
-        hierarchy = Oli.Publishing.DeliveryResolver.full_hierarchy(section.slug)
-
         graded_pages =
-          hierarchy
-          |> Oli.Delivery.Hierarchy.flatten()
-          |> Enum.filter(fn node -> node.revision.graded end)
-          |> Enum.map(fn node -> node.revision end)
+          Oli.Grading.fetch_graded_pages(section.slug)
 
         enrollments =
           Sections.browse_enrollments(
@@ -81,15 +76,14 @@ defmodule OliWeb.Grades.GradebookView do
           )
 
         {:ok,
-         assign(socket,
-           delivery_breadcrumb: true,
-           breadcrumbs: set_breadcrumbs(type, section),
-           section: section,
-           total_count: total_count,
-           table_model: table_model,
-           graded_pages: graded_pages,
-           options: @default_options
-         )}
+          assign(socket,
+            breadcrumbs: set_breadcrumbs(type, section),
+            section: section,
+            total_count: total_count,
+            table_model: table_model,
+            graded_pages: graded_pages,
+            options: @default_options
+          )}
     end
   end
 
@@ -162,9 +156,9 @@ defmodule OliWeb.Grades.GradebookView do
 
   def render(assigns) do
     ~F"""
-    <div>
+    <div class="container mx-auto">
 
-      <div class="d-flex justify-content-between">
+      <div>
         <TextSearch id="text-search"/>
         <div class="form-check mt-2">
           <input type="checkbox" id="toggle_show_all_links" class="form-check-input" checked={@show_all_links} phx-hook="CheckboxListener" />

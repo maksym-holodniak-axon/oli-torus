@@ -1,3 +1,4 @@
+import { EntityId } from '@reduxjs/toolkit';
 import { updatePart } from 'apps/authoring/store/parts/actions/updatePart';
 import { NotificationType } from 'apps/delivery/components/NotificationContext';
 import React, { useEffect, useState } from 'react';
@@ -6,6 +7,7 @@ import { selectCurrentActivityTree } from '../../../delivery/store/features/grou
 import { selectBottomPanel, setCopiedPart, setRightPanelActiveTab } from '../../store/app/slice';
 import { selectCurrentSelection, setCurrentSelection } from '../../store/parts/slice';
 import { RightPanelTabs } from '../RightMenu/RightMenu';
+
 import AuthoringActivityRenderer from './AuthoringActivityRenderer';
 import ConfigurationModal from './ConfigurationModal';
 import StagePan from './StagePan';
@@ -18,7 +20,7 @@ const EditingCanvas: React.FC = () => {
 
   const [currentActivity] = (currentActivityTree || []).slice(-1);
 
-  const [currentActivityId, setCurrentActivityId] = useState<string>('');
+  const [currentActivityId, setCurrentActivityId] = useState<EntityId>('');
 
   const [showConfigModal, setShowConfigModal] = useState<boolean>(false);
   const [configModalFullscreen, setConfigModalFullscreen] = useState<boolean>(false);
@@ -63,7 +65,9 @@ const EditingCanvas: React.FC = () => {
 
     const newPosition = { x: dragData.x, y: dragData.y };
 
-    dispatch(updatePart({ activityId, partId, changes: { custom: newPosition } }));
+    dispatch(
+      updatePart({ activityId, partId, changes: { custom: newPosition }, mergeChanges: true }),
+    );
 
     return newPosition;
   };
@@ -133,7 +137,7 @@ const EditingCanvas: React.FC = () => {
             currentActivityTree.map((activity) => (
               <AuthoringActivityRenderer
                 key={activity.id}
-                activityModel={activity}
+                activityModel={activity as any}
                 editMode={activity.id === currentActivityId}
                 configEditorId={configEditorId}
                 onSelectPart={handlePartSelect}

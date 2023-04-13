@@ -15,6 +15,7 @@ defmodule Oli.Authoring.Course.Project do
     field :visibility, Ecto.Enum, values: [:authors, :selected, :global], default: :authors
     field :status, Ecto.Enum, values: [:active, :deleted], default: :active
     field :allow_duplication, :boolean, default: false
+    field :has_experiments, :boolean, default: false
     field :legacy_svn_root, :string
 
     embeds_one :customizations, CustomLabels, on_replace: :delete
@@ -42,6 +43,8 @@ defmodule Oli.Authoring.Course.Project do
     field :owner_id, :integer, virtual: true
     field :owner_name, :string, virtual: true
 
+    belongs_to :required_survey, Oli.Resources.Resource, foreign_key: :required_survey_resource_id
+
     timestamps(type: :utc_datetime)
   end
 
@@ -58,8 +61,10 @@ defmodule Oli.Authoring.Course.Project do
       :visibility,
       :status,
       :allow_duplication,
+      :has_experiments,
       :legacy_svn_root,
-      :publisher_id
+      :publisher_id,
+      :required_survey_resource_id
     ])
     |> cast_embed(:attributes, required: false)
     |> cast_embed(:customizations, required: false)
@@ -80,6 +85,7 @@ defmodule Oli.Authoring.Course.Project do
       :visibility,
       :status,
       :allow_duplication,
+      :has_experiments,
       :legacy_svn_root,
       :publisher_id
     ])

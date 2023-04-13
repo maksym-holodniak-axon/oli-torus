@@ -328,7 +328,9 @@ defmodule Oli.SectionsTest do
       assert Sections.has_student_data?(section.slug)
     end
 
-    test "get_remixed_projects/2 returns a list of remixed projects for a section", %{section: section} do
+    test "get_remixed_projects/2 returns a list of remixed projects for a section", %{
+      section: section
+    } do
       remixed_projects = Sections.get_remixed_projects(section.id, section.base_project_id)
       assert 0 = length(remixed_projects)
 
@@ -818,7 +820,8 @@ defmodule Oli.SectionsTest do
         )
         |> Repo.all()
 
-      assert section_resources |> Enum.count() == 8
+      # there is only seven since one of the pages is unreachable
+      assert section_resources |> Enum.count() == 7
     end
 
     test "apply_publication_update/2 handles minor non-hierarchical updates",
@@ -1077,7 +1080,7 @@ defmodule Oli.SectionsTest do
         )
         |> Repo.all()
 
-      assert product_section_resources |> Enum.count() == 7
+      assert product_section_resources |> Enum.count() == 3
 
       # apply the new publication update to the section
       Sections.apply_publication_update(section, latest_publication.id)
@@ -1121,7 +1124,70 @@ defmodule Oli.SectionsTest do
         )
         |> Repo.all()
 
-      assert section_resources |> Enum.count() == 8
+      assert section_resources |> Enum.count() == 7
+    end
+  end
+
+  describe "get_student_roles?/2" do
+    setup do
+      user = insert(:user)
+      section = insert(:section)
+      {:ok, %{section: section, user: user}}
+    end
+
+    test "returns false for student and instructor when users are enrolled with any other roles",
+         %{
+           section: section,
+           user: user
+         } do
+      other_roles =
+        [
+          :context_administrator,
+          :context_content_developer,
+          :context_mentor,
+          :context_manager,
+          :context_member,
+          :context_officer
+        ]
+        |> Enum.map(&ContextRoles.get_role(&1))
+
+      Sections.enroll(user.id, section.id, other_roles)
+
+      assert %{is_student?: false, is_instructor?: false} ==
+               Sections.get_user_roles(user, section.slug)
+    end
+
+    test "returns true when enrolled as student", %{
+      section: section,
+      user: user
+    } do
+      Sections.enroll(user.id, section.id, [ContextRoles.get_role(:context_learner)])
+
+      assert %{is_student?: true, is_instructor?: false} ==
+               Sections.get_user_roles(user, section.slug)
+    end
+
+    test "returns true when enrolled as instructor", %{
+      section: section,
+      user: user
+    } do
+      Sections.enroll(user.id, section.id, [ContextRoles.get_role(:context_instructor)])
+
+      assert %{is_student?: false, is_instructor?: true} ==
+               Sections.get_user_roles(user, section.slug)
+    end
+
+    test "returns true when enrolled as instructor and student", %{
+      section: section,
+      user: user
+    } do
+      Sections.enroll(user.id, section.id, [
+        ContextRoles.get_role(:context_instructor),
+        ContextRoles.get_role(:context_learner)
+      ])
+
+      assert %{is_student?: true, is_instructor?: true} ==
+               Sections.get_user_roles(user, section.slug)
     end
   end
 

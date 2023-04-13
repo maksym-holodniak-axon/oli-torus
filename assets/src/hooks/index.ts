@@ -15,6 +15,9 @@ import { TooltipInit } from './tooltip';
 import { BeforeUnloadListener } from './before_unload';
 import { ThemeToggle } from './theme_toggle';
 import { LtiConnectInstructions } from './lti_connect_instructions';
+import { HierarchySelector } from './hierarchy_selector';
+import { TextareaListener } from './textarea_listener';
+import LiveReact from 'phoenix_live_react';
 
 export const Hooks = {
   GraphNavigation,
@@ -35,4 +38,7 @@ export const Hooks = {
   BeforeUnloadListener,
   ThemeToggle,
   LtiConnectInstructions,
+  HierarchySelector,
+  TextareaListener,
+  LiveReact,
 };

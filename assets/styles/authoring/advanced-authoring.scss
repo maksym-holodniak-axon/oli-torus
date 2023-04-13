@@ -37,14 +37,14 @@ $font-family-sans-serif: var(--font-sans);
 }
 .advanced-authoring {
   position: relative;
-  opacity: 0;
+  // opacity: 0;
   transition-timing-function: ease-in-out;
   transition-duration: 0.3s;
   transition-property: opacity;
 
-  &.startup {
-    opacity: 1;
-  }
+  // &.startup {
+  //   opacity: 1;
+  // }
   .aa-panel,
   .aa-header-nav {
     position: fixed;
@@ -72,7 +72,8 @@ $font-family-sans-serif: var(--font-sans);
       transition-property: left, visibility;
       border-left: 1px solid $ui-border-color;
       border-right: 1px solid $ui-border-color;
-
+      height: 100vh;
+      overflow: hidden;
       &.open {
         left: 65px;
         visibility: visible;
@@ -86,6 +87,23 @@ $font-family-sans-serif: var(--font-sans);
       transition-property: right, visibility;
       border-left: 1px solid $ui-border-color;
       border-right: 1px solid $ui-border-color;
+
+      .form-group .p-0.m-0.container-fluid .mb-2.d-flex.align-items-center.row {
+        // This section is a bit of a hack, I tried to target it as narrowly as possible.
+        // The array-editor in the rjsf/bootstrap theme wasn't looking right, this fixes those styles.
+        // Unfortunately, the 3.x.x branch of rjsf/bootstrap doesn't honor the ui schema classNames property,
+        // so it's not possible to more sanely target these.
+        // A longer-term proper fix would be to upgrade rjsf and rjsf/bootstrap from 3.x to 5.x which is a bigger
+        // lift than I want to take right now.
+        .col-lg-9.col-9 {
+          flex: 0 0 65%;
+          padding-right: 0;
+          max-width: 65%;
+        }
+        .py-4.col-lg-3.col-3 {
+          padding-left: 0;
+        }
+      }
 
       &.open {
         right: 0;
@@ -335,7 +353,7 @@ $font-family-sans-serif: var(--font-sans);
     height: $panel-section-title-bar-height;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px 0 4px;
+    padding: 0 4px;
     // position: sticky;
     // top: 0;
     // z-index: 3;
@@ -425,8 +443,20 @@ $font-family-sans-serif: var(--font-sans);
       position: relative;
     }
   }
+  .aa-sequence-editor {
+    max-height: 60vh;
+  }
+  .aa-adaptivity-rules {
+    max-height: 30vh;
+  }
   .aa-sequence-editor,
   .aa-adaptivity-rules {
+    overflow-y: auto;
+    .aa-panel-section-title-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
     .aa-sequence,
     .aa-rules-list {
       border-radius: inherit;
@@ -637,72 +667,78 @@ $font-family-sans-serif: var(--font-sans);
     }
   }
 
-  #aa-variable-picker {
-    font-size: 13px;
-
-    .popover-header {
-      display: flex;
-      font-family: 'Raleway', $font-family-sans-serif;
-      font-size: 12px;
-      color: $panel-font-color-light;
-      height: $panel-section-title-bar-height;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .target-select-container {
-      background-color: $panel-bg-color-light;
-      margin: -8px -12px;
-      padding: 8px 12px;
-      min-width: 350px;
-      border-bottom: 1px solid $ui-border-color;
-
-      .dropdown-toggle:after {
-        display: block;
-        margin-left: 8px;
-        font-size: 14px;
-      }
-      .screen-picker-container {
-        max-height: 200px;
-        overflow-y: scroll;
-      }
-    }
-    .variable-picker-dropdown {
-      font-size: 12px;
-      background: #fff;
-      color: $panel-font-color-light;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border-color: $ui-border-color;
-    }
-    .activity-tree {
-      margin-top: 16px;
-      max-height: 250px;
-      overflow-y: scroll;
-
-      .part-type {
-        padding: 8px 0 8px 8px;
-        border: none;
-        border-top: 1px solid $ui-border-color;
-        display: flex;
-        align-items: center;
-        background-color: #fff;
-
-        &:first-of-type {
-          border-top: none;
-        }
-      }
-      .part-type-icon {
-        max-width: 16px;
-        max-height: 16px;
-      }
-    }
-  }
   .text-btn {
     background: none;
     border: none;
     color: $panel-font-color-light;
+  }
+}
+
+#aa-variable-picker {
+  font-size: 13px;
+
+  .popover-header {
+    display: flex;
+    font-family: 'Raleway', $font-family-sans-serif;
+    font-size: 12px;
+    color: $panel-font-color-light;
+    height: $panel-section-title-bar-height;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .target-select-container {
+    background-color: $panel-bg-color-light;
+    padding: 6px;
+    margin: -8px;
+    min-width: 350px;
+    border-bottom: 1px solid $ui-border-color;
+
+    .dropdown-toggle:after {
+      display: block;
+      font-size: 14px;
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      margin-left: 8px;
+      margin-right: 8px;
+      content: '\f078';
+    }
+    .screen-picker-container {
+      max-height: 200px;
+      overflow-y: scroll;
+    }
+  }
+  .variable-picker-dropdown {
+    font-size: 12px;
+    background: #fff;
+    color: $panel-font-color-light;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 1px solid $ui-border-color;
+    margin-left: 8px;
+  }
+  .activity-tree {
+    margin-top: 16px;
+    max-height: 250px;
+    overflow-y: scroll;
+
+    .part-type {
+      padding: 8px 0 8px 8px;
+      border: none;
+      border-top: 1px solid $ui-border-color;
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+    .part-type-icon {
+      max-width: 16px;
+      max-height: 16px;
+    }
   }
 }
 
@@ -756,4 +792,12 @@ $font-family-sans-serif: var(--font-sans);
 .canvas-dots {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAJElEQVQoU2M8cOLif2MdFQZCgPHzl6//CSkCyY8qxBtKRAcPAJ9FJplIpKVIAAAAAElFTkSuQmCC)
     repeat;
+}
+
+.tooltip {
+  z-index: 10000;
+}
+
+#advanced-authoring .collapse {
+  visibility: visible;
 }
