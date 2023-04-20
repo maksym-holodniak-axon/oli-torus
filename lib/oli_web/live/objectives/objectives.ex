@@ -172,6 +172,7 @@ defmodule OliWeb.ObjectivesLive.Objectives do
 
         <div class="d-flex flex-row-reverse">
           <button class="btn btn-primary" :on-click="display_new_modal">Create new Objective</button>
+          <button class="btn btn-warning mr-3" :on-click="chatgpt">Quickstart w/ ChatGPT</button>
         </div>
 
         <div id="objectives-table" class="my-4">
@@ -225,6 +226,55 @@ defmodule OliWeb.ObjectivesLive.Objectives do
        modal,
        modal_assigns: modal_assigns
      )}
+  end
+
+  def handle_event("chatgpt", _, socket) do
+
+    clean_parse = fn body, keys ->
+
+      body = Jason.decode!(body)
+      body = body["choices"] |> hd |> Map.get("text")
+
+      body = String.replace(body, "\n", "")
+      |> String.replace("\n", "")
+      |> String.replace("  ", " ")
+
+      Enum.reduce(keys, body, fn k, body ->
+        replace = "\"" <> k <> "\"" <> ":"
+        String.replace(body, k <> ":", replace)
+      end)
+      |> Jason.decode!()
+
+     end
+
+    socket = clear_flash(socket)
+
+    project = socket.assigns.project
+
+    {:ok, body} =
+      Oli.OpenAI.request("""
+      Please provide a list of learning objectives for a college level course on #{project.title} whose
+      description is: '#{project.description}'.  A learning objective is a statement that describes what
+      a learner will be able to do after completing a course.
+
+      You must output these as a JSON array of objects of the form: {title: string;}
+      """, "text-davinci-003", 2048)
+
+
+    objectives = clean_parse.(body, ["title"])
+
+    Enum.map(objectives, fn %{"title" => title} ->
+      ObjectiveEditor.add_new(
+        %{title: title},
+        socket.assigns.author,
+        project,
+        nil
+      ) end)
+
+    flash_fn = fn socket -> put_flash(socket, :info, "Objectives successfully created") end
+
+    return_updated_data(project, flash_fn, socket)
+
   end
 
   def handle_event("hide_modal", _, socket),
