@@ -255,7 +255,8 @@ defmodule OliWeb.ObjectivesLive.Objectives do
       Oli.OpenAI.request("""
       Please provide a list of learning objectives for a college level course on #{project.title} whose
       description is: '#{project.description}'.  A learning objective is a statement that describes what
-      a learner will be able to do after completing a course.
+      a learner will be able to do after completing a course. Learning objectives should be specific,
+      measurable, and achievable.
 
       You must output these as a JSON array of objects of the form: {title: string;}
       """, "text-davinci-003", 2048)

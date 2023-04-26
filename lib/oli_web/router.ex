@@ -1196,6 +1196,7 @@ defmodule OliWeb.Router do
       pipe_through([:api])
 
       post("/", Api.OpenAIController, :prompt)
+      post("/content", Api.OpenAIController, :content_prompt)
     end
 
     scope "/dev", OliWeb do

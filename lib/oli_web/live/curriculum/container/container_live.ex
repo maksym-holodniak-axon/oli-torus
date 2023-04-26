@@ -223,6 +223,96 @@ defmodule OliWeb.Curriculum.ContainerLive do
     end)
   end
 
+  def handle_event("chatgpt", _, socket) do
+
+    clean_parse = fn body, keys ->
+
+      body = Jason.decode!(body)
+      body = body["choices"] |> hd |> Map.get("text")
+
+      body = String.replace(body, "\n", "")
+      |> String.replace("\n", "")
+      |> String.replace("  ", " ")
+
+      Enum.reduce(keys, body, fn k, body ->
+        replace = "\"" <> k <> "\"" <> ":"
+        String.replace(body, k <> ":", replace)
+      end)
+      |> Jason.decode!()
+
+     end
+
+    socket = clear_flash(socket)
+
+    project = socket.assigns.project
+
+    objectives = Oli.Publishing.AuthoringResolver.revisions_of_type(project.slug, Oli.Resources.ResourceType.get_id_by_type("objective"))
+
+    {:ok, body} =
+      Oli.OpenAI.request("""
+      Please a course outline for a college level course on #{project.title} whose
+      description is: '#{project.description}'.  This course should target the following
+      learning objectives: #{Enum.map(objectives, & &1.title) |> Enum.join(", ")}.
+
+      You must output the course outline as a JSON array of objects of the form: {title: string; children: [string];}
+      Where the children are the titles of the pages of the course and the top-level title
+      is the title units of the course. Do not include "Unit" or "Page" in the titles.
+
+      It is required that there be at least 3 units and at least 3 pages per unit.
+
+      """, "text-davinci-003", 2048)
+
+
+    clean_parse.(body, ["title", "children"])
+    |> Enum.map(fn item ->
+
+      root = Oli.Publishing.AuthoringResolver.root_container(project.slug)
+
+      {:ok, revision} = ContainerEditor.add_new(
+           root,
+           "Container",
+           socket.assigns.author,
+           socket.assigns.project,
+           socket.assigns.numberings
+         )
+
+      Oli.Publishing.ChangeTracker.track_revision(
+        project.slug,
+        revision,
+        %{"title" => item["title"]}
+      )
+
+      Enum.map(item["children"], fn title ->
+
+        revision = Oli.Publishing.AuthoringResolver.from_revision_slug(socket.assigns.project.slug, revision.slug)
+
+        {:ok, page_revision} = ContainerEditor.add_new(
+           revision,
+           "Unscored",
+           socket.assigns.author,
+           socket.assigns.project,
+           socket.assigns.numberings
+         )
+         Oli.Publishing.ChangeTracker.track_revision(
+          project.slug,
+          page_revision,
+          %{"title" => title}
+        )
+      end)
+
+    end)
+
+    {:noreply,
+      assign(socket,
+        numberings:
+          Numbering.number_full_tree(
+            Oli.Publishing.AuthoringResolver,
+            socket.assigns.project.slug,
+            socket.assigns.project.customizations
+          )
+      )}
+  end
+
   def handle_event("show_options_modal", %{"slug" => slug}, socket) do
     %{container: container, project: project, project_hierarchy: project_hierarchy} =
       socket.assigns

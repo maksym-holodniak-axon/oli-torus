@@ -19,6 +19,7 @@ import { FeatureFlags } from 'apps/page-editor/types';
 import { modalActions } from 'actions/modal';
 import { SelectModal } from 'components/modal/SelectModal';
 import { ManageAlternativesLink } from 'components/resource/editors/AlternativesEditor';
+import * as OpenAI from 'data/persistence/openai';
 
 interface Props {
   index: number[];
@@ -108,18 +109,45 @@ export const NonActivities: React.FC<Props> = ({
           onClick={() => addAlternatives(onAddItem, index, resourceContext.projectSlug)}
         />
         <ResourceChoice
-          icon="vial"
-          label="A/B Test"
-          onHoverStart={() => onSetTip('A/B Testing is not yet supported')}
+          icon={"microchip-ai"}
+          label="OpenAI"
+          onHoverStart={() => onSetTip('ChatGPT powered content')}
           onHoverEnd={() => onResetTip()}
           key={'ab-test'}
-          disabled={true}
-          onClick={() => true}
+          disabled={false}
+          onClick={() => addOpenAIContent(resourceContext.title, onAddItem, index)}
         />
       </div>
     </div>
   );
 };
+
+
+const addOpenAIContent = (title: string, onAddItem: AddCallback, index: number[]) => {
+  return new Promise((resolve, reject) => {
+    OpenAI.contentPrompt(
+      `Create the content for a learning page whose title is "${title}". A learning page
+        is a page of content that is part of a learning resource. It contains text that
+        is displayed to the student. It explains the content of the learning page.
+       You must output a JSON array of objects of the form {text: string} where
+        the text is the content of each paragraph.
+
+        You must output at least three paragraphs.
+      `)
+    .then(result => {
+      if (result.result === 'success') {
+        const customized = createDefaultStructuredContent();
+        const paragraphs = (result.completion as any).map((c: any) => ({ type: 'p', children: [c] }));
+
+        customized.children = paragraphs;
+        onAddItem(customized, index);
+        document.body.click();
+      } else {
+        reject(result);
+      }
+    })
+  });
+}
 
 const addContent = (onAddItem: AddCallback, index: number[]) => {
   onAddItem(createDefaultStructuredContent(), index);

@@ -27,6 +27,24 @@ defmodule OliWeb.Api.OpenAIController do
     end
   end
 
+  def content_prompt(conn, %{"prompt" => prompt}) do
+    case OpenAI.request(prompt, "text-davinci-003", 3048) do
+      {:ok, body} ->
+        body = Jason.decode!(body)
+        body = body["choices"] |> hd |> Map.get("text")
+        body = String.replace(body, "\\n", "")
+        body = String.replace(body, "\n", "")
+        body = String.replace(body, "  ", " ")
+        body = String.replace(body, "text:", "\"text\":")
+        body = Jason.decode!(body)
+
+        json(conn, %{"completion" => body, "result" => "success"})
+      e ->
+        IO.inspect e
+        error(conn, 500, e)
+    end
+  end
+
   defp error(conn, code, reason) do
     conn
     |> send_resp(code, reason)
