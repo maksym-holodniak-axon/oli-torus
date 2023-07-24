@@ -1,0 +1,67 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs';
+import { Typeahead } from 'components/common/Typeahead';
+import { TorusBG } from './TorusBG';
+
+<Meta title="Torus/Typeahead" />
+
+## Common properties
+
+-
+
+## Typeahead
+
+Normal Typeahead component
+
+<Story name="Typeahead">
+  <TorusBG>
+    <Typeahead
+      options={[
+        { id: 0, label: 'One' },
+        { id: 1, label: 'Two' },
+        { id: 2, label: 'Three' },
+      ]}
+    />
+  </TorusBG>
+</Story>
+
+```jsx
+import { Typeahead } from 'components/common/Typeahead';
+
+<Typeahead
+  options={[
+    { id: 0, label: 'One' },
+    { id: 1, label: 'Two' },
+    { id: 2, label: 'Three' },
+  ]}
+/>;
+```
+
+## Auto Suggest Mode
+
+Normal Typeahead component
+
+<Story name="TypeaheadWithAutoSuggest">
+  <TorusBG>
+    <Typeahead
+      options={[
+        { id: 0, label: 'One' },
+        { id: 1, label: 'Two' },
+        { id: 2, label: 'Three' },
+      ]}
+      useAutoSuggest
+    />
+  </TorusBG>
+</Story>
+
+```jsx
+import { Typeahead } from 'components/common/Typeahead';
+
+<Typeahead
+  options={[
+    { id: 0, label: 'One' },
+    { id: 1, label: 'Two' },
+    { id: 2, label: 'Three' },
+  ]}
+  useAutoSuggest
+/>;
+```
