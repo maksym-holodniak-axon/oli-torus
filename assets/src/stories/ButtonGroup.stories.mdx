@@ -1,0 +1,43 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs';
+import { ButtonGroup } from 'components/common/ButtonGroup';
+import { TorusBG } from './TorusBG';
+
+<Meta title="Torus/ButtonGroup" />
+
+# Button Group
+
+## Common properties
+
+- variant - `primary` or `secondary`
+- All other valid `<button>` properties
+
+## Button Group
+
+Normal sized button group
+
+<Story name="ButtonGroup">
+  <TorusBG>
+    <ButtonGroup>
+      <ButtonGroup.Button>Profile</ButtonGroup.Button>
+      <ButtonGroup.Button>Settings</ButtonGroup.Button>
+      <ButtonGroup.Button>Messages</ButtonGroup.Button>
+    </ButtonGroup>
+  </TorusBG>
+</Story>
+
+## Button Group with Dropdown
+
+Normal sized button group
+
+<Story name="ButtonGroupWithDropdown">
+  <TorusBG>
+    <ButtonGroup>
+      <ButtonGroup.Button>Profile</ButtonGroup.Button>
+      <ButtonGroup.Button>Settings</ButtonGroup.Button>
+      <ButtonGroup.Dropdown>
+        <ButtonGroup.DropdownItem>Messages</ButtonGroup.DropdownItem>
+        <ButtonGroup.DropdownItem>Notifications</ButtonGroup.DropdownItem>
+      </ButtonGroup.Dropdown>
+    </ButtonGroup>
+  </TorusBG>
+</Story>

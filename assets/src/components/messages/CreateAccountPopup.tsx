@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import { ButtonGroup } from 'components/common/ButtonGroup';
 import styles from './CreateAccountPopup.modules.scss';
 
 export interface CreateAccountPopupProps {
@@ -43,38 +44,25 @@ export function CreateAccountPopup(props: CreateAccountPopupProps): JSX.Element 
       <div className={styles.createAccountPopup} onClick={(e) => onClick(e)}>
         <div className={styles.arrow}></div>
 
-        <div className="d-flex flex-row">
-          <h4>Welcome to Open and Free!</h4>
-        </div>
-        <p>
+        <h4>Welcome to Open and Free!</h4>
+
+        <p className="my-1">
           You are viewing this course as a guest. You can access course materials but your{' '}
           <b>progress will not be saved</b>.
         </p>
 
-        <p>Create an account or sign in to enroll in this course and track your progress.</p>
+        <p className="my-1">
+          Create an account or sign in to enroll in this course and track your progress.
+        </p>
         <div className="d-flex mt-4">
-          <div className="btn-group">
-            <button type="button" className="btn btn-sm btn-link" onClick={() => onDismiss()}>
-              Maybe later
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-link dropdown-toggle dropdown-toggle-split"
-              data-bs-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Toggle Dropdown</span>
-            </button>
-            <div className="dropdown-menu">
-              <button
-                className="btn btn-sm btn-link dropdown-item text-left"
-                onClick={() => onDontAskAgain()}
-              >
+          <ButtonGroup size="xs">
+            <ButtonGroup.Button onClick={() => onDismiss()}>Maybe later</ButtonGroup.Button>
+            <ButtonGroup.Dropdown>
+              <ButtonGroup.DropdownItem onClick={() => onDontAskAgain()}>
                 Don&apos;t ask again on this browser
-              </button>
-            </div>
-          </div>
+              </ButtonGroup.DropdownItem>
+            </ButtonGroup.Dropdown>
+          </ButtonGroup>
 
           <div className="flex-grow-1"></div>
           <a

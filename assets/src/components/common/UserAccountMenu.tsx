@@ -28,7 +28,6 @@ export interface User {
   name: string;
   role: string;
   roleLabel: string;
-  guest: boolean;
   roleColor: string;
   isGuest: boolean;
   isIndependentInstructor: boolean;
@@ -70,16 +69,12 @@ export const UserAccountMenu = ({
       content={
         <Dropdown>
           <>
-            {user.guest && (
-              <React.Fragment key="signin">
-                <DropdownItem>
-                  <a href={routes.signin} className="btn">
-                    Sign in / Create account
-                  </a>
-                </DropdownItem>
-
-                <CreateAccountPopup sectionSlug={sectionSlug} />
-              </React.Fragment>
+            {user.isGuest && (
+              <DropdownItem key="signin">
+                <a href={routes.signin} className="py-1 block w-full">
+                  Sign in / Create account
+                </a>
+              </DropdownItem>
             )}
             {(!(user.role === Roles.Student || user.isIndependentLearner) ||
               user.isIndependentInstructor) &&
@@ -184,34 +179,42 @@ export const UserAccountMenu = ({
         </Dropdown>
       }
     >
-      <button
-        className="
-          px-6
-          py-2.5
-          font-medium
-          text-sm
-          leading-tight
-          transition
-          duration-150
-          ease-in-out
-          flex
-          w-full
-          whitespace-nowrap
-          text-left
-        "
-        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-      >
-        <div className="user-icon mr-4 self-center">
-          <UserIcon user={user} />
-        </div>
-
-        <div className="block">
-          <div className="username">{user.name}</div>
-          <div className="role" style={{ color: user.roleColor }}>
-            {user.roleLabel}
+      <div>
+        <button
+          className="
+            px-6
+            py-2.5
+            font-medium
+            text-sm
+            leading-tight
+            transition
+            duration-150
+            ease-in-out
+            flex
+            w-full
+            whitespace-nowrap
+            text-left
+          "
+          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+        >
+          <div className="user-icon mr-4 self-center">
+            <UserIcon user={user} />
           </div>
-        </div>
-      </button>
+
+          <div className="block">
+            <div className="username">{user.name}</div>
+            <div className="role" style={{ color: user.roleColor }}>
+              {user.roleLabel}
+            </div>
+          </div>
+        </button>
+
+        {user.isGuest && (
+          <div className="relative">
+            <CreateAccountPopup sectionSlug={sectionSlug} />
+          </div>
+        )}
+      </div>
     </Popover>
   ) : (
     <></>
