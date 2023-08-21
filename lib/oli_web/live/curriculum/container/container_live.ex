@@ -33,7 +33,8 @@ defmodule OliWeb.Curriculum.ContainerLive do
   alias Oli.Authoring.Broadcaster.Subscriber
   alias Oli.Resources.Numbering
   alias OliWeb.Router.Helpers, as: Routes
-  alias OliWeb.Common.Breadcrumb
+  alias OliWeb.Common.{Breadcrumb}
+  alias OliWeb.Breadcrumb.DropdownLink
   alias Oli.Delivery.Hierarchy
   alias Oli.Resources.Revision
   alias OliWeb.Common.SessionContext
@@ -51,7 +52,9 @@ defmodule OliWeb.Curriculum.ContainerLive do
     container_slug = Map.get(params, "container_slug")
 
     project = Course.get_project_by_slug(project_slug)
-    project_hierarchy = AuthoringResolver.full_hierarchy(project_slug) |> HierarchyNode.simplify()
+
+    hierarchy = AuthoringResolver.full_hierarchy(project.slug)
+    project_hierarchy =  HierarchyNode.simplify(hierarchy)
 
     cond do
       # Explicitly routing to root_container, strip off the container param
@@ -92,7 +95,8 @@ defmodule OliWeb.Curriculum.ContainerLive do
                project_slug,
                container.slug,
                Oli.Publishing.AuthoringResolver,
-               project.customizations
+               project.customizations,
+               construct_hierarchy_links(hierarchy, project_slug)
              ),
            adaptivity_flag: Oli.Features.enabled?("adaptivity"),
            rollup: rollup,
@@ -114,6 +118,24 @@ defmodule OliWeb.Curriculum.ContainerLive do
            page_title: "Curriculum | " <> project.title
          )}
     end
+  end
+
+  def construct_hierarchy_links(hierarchy, project_slug) do
+
+    container_type_id = Oli.Resources.ResourceType.get_id_by_type("container")
+
+    Oli.Delivery.Hierarchy.flatten(hierarchy)
+    |> Enum.map(fn node -> %DropdownLink{
+        item: node,
+        link:
+          case node.revision.resource_type_id do
+            ^container_type_id ->
+              Routes.container_path(OliWeb.Endpoint, :index, project_slug, node.revision.slug)
+            _ ->
+              Routes.resource_path(OliWeb.Endpoint, :edit, project_slug, node.revision.slug)
+          end
+
+      } end)
   end
 
   # Load either a specific container, or if the slug is nil the root. After loaded,

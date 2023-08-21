@@ -19,6 +19,7 @@ defmodule OliWeb.Common.Breadcrumb do
             phx_click: nil,
             phx_value: nil,
             slug: nil,
+            dropdowns: [],
             action_descriptions: []
 
   @doc """
@@ -65,7 +66,7 @@ defmodule OliWeb.Common.Breadcrumb do
      [%Breadcrumb{ curriculum }, %Breadcrumb{ container_1 }, ..., %Breadcrumb{ revision_slug }]
 
   """
-  def trail_to(project_or_section_slug, revision_slug, resolver, custom_labels) do
+  def trail_to(project_or_section_slug, revision_slug, resolver, custom_labels, hierarchy_links \\ []) do
     with numberings <- Numbering.number_full_tree(resolver, project_or_section_slug, custom_labels),
          numbering <-
            Numbering.path_from_root_to(
@@ -81,7 +82,7 @@ defmodule OliWeb.Common.Breadcrumb do
             end)
 
           [
-            curriculum(project_or_section_slug)
+            curriculum(project_or_section_slug, hierarchy_links)
             | trail
           ]
 
@@ -130,6 +131,7 @@ defmodule OliWeb.Common.Breadcrumb do
   ## Parameters
 
     - project_slug
+    - full_hierarchy_links, list of hierarchy links, in course project order
 
   ## Examples
 
@@ -137,9 +139,10 @@ defmodule OliWeb.Common.Breadcrumb do
      %Breadcrumb{ full_title: "Curriculum", link: curriculum_path }
 
   """
-  def curriculum(project_slug) do
+  def curriculum(project_slug, full_hierarchy_links \\ []) do
     new(%{
       full_title: "Curriculum",
+      dropdowns: full_hierarchy_links,
       link:
         Routes.container_path(
           OliWeb.Endpoint,

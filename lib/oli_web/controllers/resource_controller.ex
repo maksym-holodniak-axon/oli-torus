@@ -40,6 +40,8 @@ defmodule OliWeb.ResourceController do
     project = conn.assigns.project
     activity_types = Activities.activities_for_project(project)
 
+    hierarchy = AuthoringResolver.full_hierarchy(project_slug)
+
     render(conn, "advanced.html",
       app_params: %{
         isAdmin: is_admin?,
@@ -61,7 +63,8 @@ defmodule OliWeb.ResourceController do
           project_slug,
           revision_slug,
           Oli.Publishing.AuthoringResolver,
-          project.customizations
+          project.customizations,
+          OliWeb.Curriculum.ContainerLive.construct_hierarchy_links(hierarchy, project.slug)
         ),
       graded: context.graded,
       part_scripts: PartComponents.get_part_component_scripts(:authoring_script),
@@ -72,6 +75,7 @@ defmodule OliWeb.ResourceController do
 
   defp render_editor(context, conn, project_slug, revision_slug, is_admin?) do
     project = conn.assigns.project
+    hierarchy = AuthoringResolver.full_hierarchy(project_slug)
 
     render(conn, "edit.html",
       active: :curriculum,
@@ -80,7 +84,8 @@ defmodule OliWeb.ResourceController do
           project_slug,
           revision_slug,
           Oli.Publishing.AuthoringResolver,
-          project.customizations
+          project.customizations,
+          OliWeb.Curriculum.ContainerLive.construct_hierarchy_links(hierarchy, project.slug)
         ),
       is_admin?: is_admin?,
       raw_context: context,
