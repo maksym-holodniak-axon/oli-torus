@@ -102,6 +102,10 @@ defmodule OliWeb.Router do
     plug(:put_root_layout, {OliWeb.LayoutView, :delivery})
   end
 
+  pipeline :storybook_layout do
+    plug(:put_root_layout, {OliWeb.LayoutView, :storybook})
+  end
+
   pipeline :maybe_gated_resource do
     plug(Oli.Plugs.MaybeGatedResource)
   end
