@@ -332,7 +332,7 @@ defmodule OliWeb.Projects.OverviewLive do
           <AsyncExporter.datashop
             ctx={@ctx}
             latest_publication={@latest_publication}
-            datashop_export_status={@datashop_export_status}
+            datashop_export_status={:disabled}
             datashop_export_url={@datashop_export_url}
             datashop_export_timestamp={@datashop_export_timestamp}
           />

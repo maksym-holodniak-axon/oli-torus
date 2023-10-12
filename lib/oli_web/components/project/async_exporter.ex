@@ -68,7 +68,11 @@ defmodule OliWeb.Components.Project.AsyncExporter do
 
   attr(:ctx, SessionContext, required: true)
   attr(:latest_publication, Publication, default: nil)
-  attr(:datashop_export_status, :atom, values: [:not_available, :in_progress, :available, :error])
+
+  attr(:datashop_export_status, :atom,
+    values: [:disabled, :not_available, :in_progress, :available, :error]
+  )
+
   attr(:datashop_export_url, :string)
   attr(:datashop_export_timestamp, :string)
   attr(:on_generate_datashop_snapshot, :string, default: "generate_datashop_snapshot")
@@ -117,6 +121,15 @@ defmodule OliWeb.Components.Project.AsyncExporter do
               <div class="text-sm text-gray-500">
                 <i class="fa-solid fa-exclamation-circle text-red-500"></i>
                 Error generating datashop snapshot. Please try again later or contact support.
+              </div>
+            </div>
+          <% :disabled -> %>
+            <.button_link disabled>Datashop</.button_link>
+            <div class="flex flex-col">
+              <div>Create a <.datashop_link /> snapshot for download</div>
+              <div class="text-sm text-gray-500">
+                <i class="fa-solid fa-exclamation-circle text-red-500"></i>
+                Datashop export is disabled for this project.
               </div>
             </div>
         <% end %>
