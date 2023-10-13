@@ -25,8 +25,7 @@ defmodule Oli.Repo.Migrations.AddPromptTemplates do
   """
 
   def change do
-
-    execute "CREATE EXTENSION IF NOT EXISTS vector"
+    # execute "CREATE EXTENSION IF NOT EXISTS vector"
 
     flush()
 
@@ -48,5 +47,4 @@ defmodule Oli.Repo.Migrations.AddPromptTemplates do
       }
     ])
   end
-
 end
