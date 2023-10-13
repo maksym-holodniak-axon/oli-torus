@@ -102,6 +102,10 @@ defmodule OliWeb.Router do
     plug(:put_root_layout, {OliWeb.LayoutView, :delivery})
   end
 
+  pipeline :storybook_layout do
+    plug(:put_root_layout, {OliWeb.LayoutView, :storybook})
+  end
+
   pipeline :maybe_gated_resource do
     plug(Oli.Plugs.MaybeGatedResource)
   end
@@ -1371,6 +1375,8 @@ defmodule OliWeb.Router do
     # web interface for viewing sent emails during development
     forward("/dev/sent_emails", Bamboo.SentEmailViewerPlug)
 
+    live_storybook("/storybook", backend_module: OliWeb.Storybook)
+
     scope "/api/v1/testing", OliWeb do
       pipe_through([:api])
 
@@ -1383,8 +1389,6 @@ defmodule OliWeb.Router do
       get("/flame_graphs", DevController, :flame_graphs)
 
       live("/dialogue", Dialogue.PlaygroundLive)
-
-      live_storybook("/storybook", backend_module: OliWeb.Storybook)
     end
   end
 end
