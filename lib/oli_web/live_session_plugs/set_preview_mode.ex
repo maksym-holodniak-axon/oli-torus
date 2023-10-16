@@ -4,6 +4,6 @@ defmodule OliWeb.LiveSessionPlugs.SetPreviewMode do
   import Phoenix.Component, only: [assign: 2]
 
   def on_mount(:default, _params, _session, socket) do
-    {:cont, assign(socket, is_preview_mode: socket.assigns[:live_action] == :preview)}
+    {:cont, assign(socket, preview_mode: socket.assigns[:live_action] == :preview)}
   end
 end

@@ -17,14 +17,14 @@ defmodule OliWeb.Components.Delivery.Layouts do
   attr(:ctx, SessionContext)
   attr(:section, Section)
   attr(:brand, Brand)
-  attr(:is_preview_mode, :boolean)
+  attr(:preview_mode, :boolean)
   attr(:active_tab, :atom, required: true)
   slot(:inner_block, required: true)
 
   def header_with_sidebar_nav(assigns) do
     ~H"""
     <div class="h-screen flex flex-col overscroll-none">
-      <.header ctx={@ctx} section={@section} brand={@brand} is_preview_mode={@is_preview_mode} />
+      <.header ctx={@ctx} section={@section} brand={@brand} preview_mode={@preview_mode} />
 
       <main role="main" class="flex-1 flex flex-col relative md:flex-row overscroll-contain">
         <.sidebar_nav ctx={@ctx} section={@section} active_tab={@active_tab} />
@@ -40,7 +40,7 @@ defmodule OliWeb.Components.Delivery.Layouts do
   attr(:ctx, SessionContext)
   attr(:section, Section)
   attr(:brand, Brand)
-  attr(:is_preview_mode, :boolean)
+  attr(:preview_mode, :boolean)
 
   def header(assigns) do
     ~H"""
@@ -48,7 +48,7 @@ defmodule OliWeb.Components.Delivery.Layouts do
       <div class="w-48 p-3">
         <a
           className="block lg:p-2 lg:mb-14 mx-auto"
-          href={logo_link_path(@is_preview_mode, @section, @ctx.user)}
+          href={logo_link_path(@preview_mode, @section, @ctx.user)}
         >
           <.logo_img />
         </a>

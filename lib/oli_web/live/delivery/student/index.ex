@@ -14,7 +14,7 @@ defmodule OliWeb.Delivery.Student.Index do
       ctx={@ctx}
       section={@section}
       brand={@brand}
-      is_preview_mode={@is_preview_mode}
+      preview_mode={@preview_mode}
       active_tab={:index}
     >
       <.welcome_banner ctx={@ctx} />

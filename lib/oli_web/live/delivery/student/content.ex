@@ -13,7 +13,7 @@ defmodule OliWeb.Delivery.Student.Content do
       ctx={@ctx}
       section={@section}
       brand={@brand}
-      is_preview_mode={@is_preview_mode}
+      preview_mode={@preview_mode}
       active_tab={:content}
     >
       <div class="container mx-auto">

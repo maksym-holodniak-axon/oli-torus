@@ -35,7 +35,7 @@ defmodule OliWeb.Delivery.Student.Discussion do
       ctx={@ctx}
       section={@section}
       brand={@brand}
-      is_preview_mode={@is_preview_mode}
+      preview_mode={@preview_mode}
       active_tab={:discussion}
     >
       <div class="container mx-auto px-10 py-8">
