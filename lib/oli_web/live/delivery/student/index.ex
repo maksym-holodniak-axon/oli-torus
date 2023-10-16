@@ -1,4 +1,4 @@
-defmodule OliWeb.Delivery.Index do
+defmodule OliWeb.Delivery.Student.Index do
   use OliWeb, :live_view
 
   import OliWeb.Components.Delivery.Utils

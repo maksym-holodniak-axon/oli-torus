@@ -950,8 +950,8 @@ defmodule OliWeb.Router do
         OliWeb.LiveSessionPlugs.SetPreviewMode,
         OliWeb.LiveSessionPlugs.RequireEnrollment
       ] do
-      live("/", Delivery.Index)
-      live("/content", Delivery.Content)
+      live("/", Delivery.Student.Index)
+      live("/content", Delivery.Student.Content)
     end
 
     # TODO: REMOVE THESE ROUTES, REPLACE WITH LIVEVIEWS
