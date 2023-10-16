@@ -23,7 +23,7 @@ defmodule OliWeb.Components.Header do
           href={
             case assigns[:logo_link] do
               nil ->
-                logo_link_path(assigns)
+                logo_link_path(assigns[:preview_mode] == true, assigns[:section], @ctx.user)
 
               logo_link ->
                 logo_link
@@ -74,7 +74,7 @@ defmodule OliWeb.Components.Header do
             </div>
           <% user_signed_in?(assigns) -> %>
             <div class="max-w-[400px]">
-              <UserAccountMenu.menu ctx={@ctx} is_liveview={Map.get(@ctx, :is_liveview)} />
+              <UserAccountMenu.menu ctx={@ctx} />
             </div>
           <% true -> %>
             <%= link("Learner/Educator Sign In",

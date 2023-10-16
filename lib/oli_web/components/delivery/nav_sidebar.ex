@@ -21,19 +21,18 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
 
   def main_with_nav(assigns) do
     ~H"""
-      <main role="main" class="flex-1 flex flex-col relative lg:flex-row">
-        <.navbar {assigns} path_info={@conn.path_info} />
+    <main role="main" class="flex-1 flex flex-col relative lg:flex-row">
+      <.navbar {assigns} path_info={@conn.path_info} />
 
-        <div class="flex-1 flex flex-col lg:pl-[200px]">
-
-          <%= render_slot(@inner_block) %>
-
-        </div>
-      </main>
+      <div class="flex-1 flex flex-col lg:pl-[200px]">
+        <%= render_slot(@inner_block) %>
+      </div>
+    </main>
     """
   end
 
-  attr(:context, SessionContext)
+  attr(:ctx, SessionContext)
+  attr(:section, Section)
   attr(:path_info, :list)
 
   def navbar(assigns) do
@@ -51,21 +50,21 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
           get_links(assigns, assigns.path_info)
         end
       )
-      |> UserAccountMenu.user_account_menu_assigns()
+      |> UserAccountMenu.user_account_menu_assigns(assigns.ctx, assigns.section)
 
     ~H"""
-      <div id="navbar" phx-update="ignore">
-        <%= ReactPhoenix.ClientSide.react_component("Components.Navbar", %{
-          logo: @logo,
-          links: @links,
-          user: @user,
-          preview: @preview,
-          routes: @routes,
-          sectionSlug: @section_slug,
-          selectedTimezone: @selected_timezone,
-          timezones: @timezones,
-        }) %>
-      </div>
+    <div id="navbar" phx-update="ignore">
+      <%= ReactPhoenix.ClientSide.react_component("Components.Navbar", %{
+        logo: @logo,
+        links: @links,
+        user: @user,
+        preview: @preview,
+        routes: @routes,
+        sectionSlug: @section_slug,
+        selectedTimezone: @selected_timezone,
+        timezones: @timezones
+      }) %>
+    </div>
     """
   end
 
@@ -190,7 +189,7 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
       assigns[:section]
       |> Oli.Repo.preload([:root_section_resource])
       |> Sections.build_hierarchy()
-      
+
     [
       %{
         name: "Home",
@@ -223,7 +222,7 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
       href:
         case assigns[:logo_link] do
           nil ->
-            logo_link_path(assigns)
+            logo_link_path(assigns[:is_preview_mode], assigns[:section], assigns[:current_user])
 
           logo_link ->
             logo_link

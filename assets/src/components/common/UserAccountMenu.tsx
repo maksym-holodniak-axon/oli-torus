@@ -91,7 +91,7 @@ export const UserAccountMenu = ({
                     </h6>
                     <a
                       href={routes.projects}
-                      className="py-1 block w-full"
+                      className="link py-1 block w-full"
                       rel="noreferrer"
                       target="_blank"
                     >
@@ -102,7 +102,7 @@ export const UserAccountMenu = ({
                   <DropdownItem>
                     <a
                       href={routes.linkAccount}
-                      className="py-1 block w-full"
+                      className="link py-1 block w-full"
                       rel="noreferrer"
                       target="_blank"
                     >
@@ -114,7 +114,7 @@ export const UserAccountMenu = ({
                 <DropdownItem>
                   <a
                     href={routes.linkAccount}
-                    className="py-1 block w-full"
+                    className="link py-1 block w-full"
                     rel="noreferrer"
                     target="_blank"
                   >
@@ -125,10 +125,12 @@ export const UserAccountMenu = ({
             {user.isIndependentLearner && (
               <>
                 <DropdownItem>
-                  <a href={routes.editAccount} className="py-1 block w-full">
+                  <a href={routes.editAccount} className="link py-1 block w-full">
                     Edit Account
                   </a>
                 </DropdownItem>
+
+                <DropdownDivider />
               </>
             )}
 
@@ -153,23 +155,23 @@ export const UserAccountMenu = ({
 
             {(user.isIndependentLearner || user.isIndependentInstructor) && (
               <>
-                <hr className="dropdown-divider" />
+                <DropdownDivider />
 
                 <DropdownItem>
-                  <a href={routes.openAndFreeIndex} className="py-1 block w-full">
+                  <a href={routes.openAndFreeIndex} className="link py-1 block w-full">
                     My Courses
                   </a>
                 </DropdownItem>
               </>
             )}
 
-            <hr className="dropdown-divider" />
+            <DropdownDivider />
 
             <DropdownItem>
               <a
                 href={routes.signout}
                 className={classNames(
-                  'py-1 block w-full',
+                  'link py-1 block w-full',
                   // disable sign out if inside an iframe
                   window.location !== window.parent.location ? 'disabled' : '',
                 )}
@@ -186,30 +188,25 @@ export const UserAccountMenu = ({
     >
       <button
         className="
-          px-6
-          py-2.5
+          flex flex-row
+          px-3
+          py-2
           font-medium
           text-sm
           leading-tight
           transition
           duration-150
           ease-in-out
-          flex
-          w-full
           whitespace-nowrap
           text-left
         "
         onClick={() => setIsPopoverOpen(!isPopoverOpen)}
       >
-        <div className="user-icon mr-4 self-center">
-          <UserIcon user={user} />
-        </div>
-
-        <div className="block">
+        <div className="">
           <div className="username">{user.name}</div>
-          <div className="role" style={{ color: user.roleColor }}>
-            {user.roleLabel}
-          </div>
+        </div>
+        <div className="user-icon ml-4 self-center">
+          <UserIcon user={user} />
         </div>
       </button>
     </Popover>
@@ -231,6 +228,16 @@ interface DropdownItemProps {}
 const DropdownItem: React.FC<PropsWithChildren<DropdownItemProps>> = ({ children }) => (
   <li className="py-1 px-4 font-normal block w-full whitespace-nowrap bg-transparent">
     {children}
+  </li>
+);
+
+interface DropdownDividerProps {}
+
+const DropdownDivider: React.FC<PropsWithChildren<DropdownDividerProps>> = (
+  _props: DropdownDividerProps,
+) => (
+  <li className="py-1 px-4 font-normal block w-full whitespace-nowrap bg-transparent">
+    <hr className="border-t border-gray-200 dark:border-gray-700 my-1" />
   </li>
 );
 

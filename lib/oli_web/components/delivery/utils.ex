@@ -2,6 +2,7 @@ defmodule OliWeb.Components.Delivery.Utils do
   use Phoenix.Component
   use OliWeb, :verified_routes
 
+  alias OliWeb.Common.SessionContext
   alias Oli.Interop.CustomActivities.User
   alias OliWeb.Router.Helpers, as: Routes
   alias Oli.Delivery.Sections.Section
@@ -21,8 +22,8 @@ defmodule OliWeb.Components.Delivery.Utils do
   @doc """
   Returns true if a user is signed in as guest
   """
-  def user_is_guest?(assigns) do
-    case assigns[:current_user] do
+  def user_is_guest?(user) do
+    case user do
       %User{guest: true} ->
         true
 
@@ -44,6 +45,22 @@ defmodule OliWeb.Components.Delivery.Utils do
     end
   end
 
+  def user_name(%SessionContext{user: user, author: author}) do
+    case {user, author} do
+      {%User{guest: true}, _} ->
+        "Guest"
+
+      {%User{name: name}, _} ->
+        name
+
+      {_, %Author{name: name}} ->
+        name
+
+      {_, _} ->
+        ""
+    end
+  end
+
   def user_name(user) do
     case user do
       %User{guest: true} ->
@@ -60,8 +77,21 @@ defmodule OliWeb.Components.Delivery.Utils do
     end
   end
 
-  def is_open_and_free_section?(assigns) do
-    case assigns[:section] do
+  def logo_link_path(is_preview_mode, section, user) do
+    cond do
+      is_preview_mode ->
+        "#"
+
+      is_open_and_free_section?(section) or is_independent_learner?(user) ->
+        ~p"/sections"
+
+      true ->
+        Routes.static_page_path(OliWeb.Endpoint, :index)
+    end
+  end
+
+  defp is_open_and_free_section?(section) do
+    case section do
       %Section{open_and_free: open_and_free} ->
         open_and_free
 
@@ -70,26 +100,13 @@ defmodule OliWeb.Components.Delivery.Utils do
     end
   end
 
-  def is_independent_learner?(assigns) do
-    case assigns[:current_user] do
+  defp is_independent_learner?(current_user) do
+    case current_user do
       %User{independent_learner: independent_learner} ->
         independent_learner
 
       _ ->
         false
-    end
-  end
-
-  def logo_link_path(assigns) do
-    cond do
-      is_preview_mode?(assigns) ->
-        "#"
-
-      is_open_and_free_section?(assigns) or is_independent_learner?(assigns) ->
-        ~p"/sections"
-
-      true ->
-        Routes.static_page_path(OliWeb.Endpoint, :index)
     end
   end
 
@@ -148,15 +165,14 @@ defmodule OliWeb.Components.Delivery.Utils do
 
   def user_icon(%{current_user: _} = assigns) do
     ~H"""
-      <%= case @current_user.picture do %>
-        <% nil -> %>
-          <.user_icon />
-
-        <% picture -> %>
-          <div class="user-icon">
-            <img src={picture} referrerpolicy="no-referrer" class="rounded-full" />
-          </div>
-      <% end %>
+    <%= case @current_user.picture do %>
+      <% nil -> %>
+        <.user_icon />
+      <% picture -> %>
+        <div class="user-icon">
+          <img src={picture} referrerpolicy="no-referrer" class="rounded-full" />
+        </div>
+    <% end %>
     """
   end
 
@@ -280,14 +296,14 @@ defmodule OliWeb.Components.Delivery.Utils do
 
   def progress_bar(assigns) do
     ~H"""
-      <div class="my-2 flex flex-row items-center">
-        <div class="font-bold"><%= @percent %>%</div>
-        <div class="flex-1 ml-3">
-          <div class={"w-[#{@width}] rounded-full bg-gray-200 h-2"}>
-            <div class="rounded-full bg-green-600 h-2" style={"width: #{@percent}%"}></div>
-          </div>
+    <div class="my-2 flex flex-row items-center">
+      <div class="font-bold"><%= @percent %>%</div>
+      <div class="flex-1 ml-3">
+        <div class={"w-[#{@width}] rounded-full bg-gray-200 h-2"}>
+          <div class="rounded-full bg-green-600 h-2" style={"width: #{@percent}%"}></div>
         </div>
       </div>
+    </div>
     """
   end
 

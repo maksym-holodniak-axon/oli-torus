@@ -11,40 +11,41 @@ defmodule OliWeb.Components.Delivery.UserAccountMenu do
   alias OliWeb.Common.React
 
   attr(:ctx, SessionContext)
-  attr(:section, Section)
-  attr(:is_liveview, :boolean, default: false)
+  attr(:section, Section, default: nil)
 
   def menu(assigns) do
-    assigns = user_account_menu_assigns(assigns)
-
-    # For some reason the react_live_component no longer works here (fails silently)
-    # so for now, just render this component as if it were in a static page - is_liveview: false
+    assigns = user_account_menu_assigns(assigns, assigns.ctx, assigns.section)
 
     ~H"""
-      <%= React.component(%SessionContext{@ctx | is_liveview: @is_liveview }, "Components.UserAccountMenu", %{
-          user: @user,
-          preview: @preview,
-          routes: @routes,
-          sectionSlug: @section_slug,
-          selectedTimezone: @selected_timezone,
-          timezones: @timezones,
-        }, id: "menu") %>
+    <%= React.component(
+      @ctx,
+      "Components.UserAccountMenu",
+      %{
+        user: @user,
+        preview: @preview,
+        routes: @routes,
+        sectionSlug: @section_slug,
+        selectedTimezone: @selected_timezone,
+        timezones: @timezones
+      },
+      id: "menu"
+    ) %>
     """
   end
 
-  def user_account_menu_assigns(assigns) do
+  def user_account_menu_assigns(assigns, ctx, section) do
     assigns
     |> assign(
       :user,
-      case assigns.ctx do
+      case ctx do
         %SessionContext{user: user_or_admin} when not is_nil(user_or_admin) ->
           %{
             picture: user_or_admin.picture,
             name: user_name(user_or_admin),
-            role: user_role(assigns[:section], user_or_admin),
-            roleLabel: user_role_text(assigns[:section], user_or_admin),
-            roleColor: user_role_color(assigns[:section], user_or_admin),
-            isGuest: user_is_guest?(assigns),
+            role: user_role(section, user_or_admin),
+            roleLabel: user_role_text(section, user_or_admin),
+            roleColor: user_role_color(section, user_or_admin),
+            isGuest: user_is_guest?(user_or_admin),
             isIndependentInstructor: Sections.is_independent_instructor?(user_or_admin),
             isIndependentLearner: user_is_independent_learner?(user_or_admin),
             linkedAuthorAccount: linked_author_account(user_or_admin),
@@ -55,10 +56,10 @@ defmodule OliWeb.Components.Delivery.UserAccountMenu do
           %{
             picture: author.picture,
             name: user_name(author),
-            role: user_role(assigns[:section], author),
-            roleLabel: user_role_text(assigns[:section], author),
-            roleColor: user_role_color(assigns[:section], author),
-            isGuest: user_is_guest?(assigns),
+            role: user_role(section, author),
+            roleLabel: user_role_text(section, author),
+            roleColor: user_role_color(section, author),
+            isGuest: user_is_guest?(author),
             isIndependentInstructor: Sections.is_independent_instructor?(author),
             isIndependentLearner: user_is_independent_learner?(author),
             linkedAuthorAccount: linked_author_account(author),
@@ -92,9 +93,9 @@ defmodule OliWeb.Components.Delivery.UserAccountMenu do
 
   def preview_user(assigns) do
     ~H"""
-      <div class="flex">
-        <button
-          class="
+    <div class="flex">
+      <button
+        class="
             dropdown-toggle
             px-6
             py-2.5
@@ -108,20 +109,20 @@ defmodule OliWeb.Components.Delivery.UserAccountMenu do
             items-center
             whitespace-nowrap
           "
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <div class="user-icon">
-            <.user_icon />
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <div class="user-icon">
+          <.user_icon />
+        </div>
+        <div class="block lg:inline-block lg:mt-0 text-grey-darkest mx-2">
+          <div class="username">
+            Preview
           </div>
-          <div class="block lg:inline-block lg:mt-0 text-grey-darkest mx-2">
-            <div class="username">
-              Preview
-            </div>
-          </div>
-        </button>
-      </div>
+        </div>
+      </button>
+    </div>
     """
   end
 

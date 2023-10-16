@@ -931,7 +931,8 @@ defmodule OliWeb.Router do
       :require_section,
       :delivery,
       :require_exploration_pages,
-      :delivery_preview,
+      # TODO: RE-ENABLE THIS
+      # :delivery_preview,
       :delivery_protected,
       :maybe_gated_resource,
       :enforce_enroll_and_paywall,
@@ -940,11 +941,25 @@ defmodule OliWeb.Router do
       :pow_email_layout
     ])
 
-    get("/overview", PageDeliveryController, :index)
+    live_session :delivery,
+      on_mount: [
+        OliWeb.LiveSessionPlugs.SetSection,
+        OliWeb.LiveSessionPlugs.SetCurrentUser,
+        OliWeb.LiveSessionPlugs.SetSessionContext,
+        OliWeb.LiveSessionPlugs.SetBrand,
+        OliWeb.LiveSessionPlugs.SetPreviewMode,
+        OliWeb.LiveSessionPlugs.RequireEnrollment
+      ] do
+      live("/", Delivery.Index)
+      live("/content", Delivery.Content)
+    end
 
+    # TODO: REMOVE THESE ROUTES, REPLACE WITH LIVEVIEWS
+    get("/overview", PageDeliveryController, :index)
     get("/exploration", PageDeliveryController, :exploration)
     get("/discussion", PageDeliveryController, :discussion)
     get("/my_assignments", PageDeliveryController, :assignments)
+
     get("/container/:revision_slug", PageDeliveryController, :container)
     get("/page/:revision_slug", PageDeliveryController, :page)
     get("/page_fullscreen/:revision_slug", PageDeliveryController, :page_fullscreen)
