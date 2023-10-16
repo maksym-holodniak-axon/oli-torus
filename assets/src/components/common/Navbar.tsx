@@ -133,6 +133,7 @@ export const Navbar = ({
               ),
             )}
           </div>
+
           <TechSupportButton />
 
           <hr className="border-t border-gray-300 dark:border-gray-700" />

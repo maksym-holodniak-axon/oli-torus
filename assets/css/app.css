@@ -67,3 +67,7 @@ a.download::after {
 body {
   scrollbar-color: transparent;
 }
+
+.bg-colorful {
+  background-image: url('/images/gradients/colorful-light-opacity-25.png');
+}

@@ -931,8 +931,7 @@ defmodule OliWeb.Router do
       :require_section,
       :delivery,
       :require_exploration_pages,
-      # TODO: RE-ENABLE THIS
-      # :delivery_preview,
+      :delivery_preview,
       :delivery_protected,
       :maybe_gated_resource,
       :enforce_enroll_and_paywall,
@@ -952,13 +951,10 @@ defmodule OliWeb.Router do
       ] do
       live("/", Delivery.Student.Index)
       live("/content", Delivery.Student.Content)
+      live("/discussion", Delivery.Student.Discussion)
+      live("/assignments", Delivery.Student.Assignments)
+      live("/explorations", Delivery.Student.Explorations)
     end
-
-    # TODO: REMOVE THESE ROUTES, REPLACE WITH LIVEVIEWS
-    get("/overview", PageDeliveryController, :index)
-    get("/exploration", PageDeliveryController, :exploration)
-    get("/discussion", PageDeliveryController, :discussion)
-    get("/my_assignments", PageDeliveryController, :assignments)
 
     get("/container/:revision_slug", PageDeliveryController, :container)
     get("/page/:revision_slug", PageDeliveryController, :page)

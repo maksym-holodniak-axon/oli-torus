@@ -114,6 +114,7 @@ defmodule OliWeb.PageDeliveryController do
     |> min(100)
   end
 
+  # TODO: DEPRECATED - REMOVE
   def exploration(conn, %{"section_slug" => section_slug}) do
     user = conn.assigns.current_user
     section = conn.assigns.section
@@ -148,6 +149,7 @@ defmodule OliWeb.PageDeliveryController do
     end
   end
 
+  # TODO: DEPRECATED - REMOVE
   def assignments(conn, %{"section_slug" => section_slug}) do
     user = conn.assigns.current_user
     section = conn.assigns.section
@@ -176,6 +178,7 @@ defmodule OliWeb.PageDeliveryController do
     end
   end
 
+  # TODO: DEPRECATED - REMOVE
   def discussion(conn, %{"section_slug" => section_slug}) do
     user = conn.assigns.current_user
     section = conn.assigns.section

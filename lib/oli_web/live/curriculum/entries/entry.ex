@@ -52,7 +52,7 @@ defmodule OliWeb.Curriculum.Entry do
           <% else %>
             <span class="ml-1 mr-1 entry-title"><%= @child.title %></span>
             <.link
-              class="entry-title mx-3"
+              class="link entry-title mx-3"
               href={
                 Routes.resource_path(
                   OliWeb.Endpoint,
@@ -87,7 +87,11 @@ defmodule OliWeb.Curriculum.Entry do
       </div>
       <!-- prevent dragging of actions menu and modals using this draggable wrapper -->
       <div draggable="true" ondragstart="event.preventDefault(); event.stopPropagation();">
-        <Actions.render child={@child} revision_history_link={@revision_history_link} project_slug={@project.slug}/>
+        <Actions.render
+          child={@child}
+          revision_history_link={@revision_history_link}
+          project_slug={@project.slug}
+        />
       </div>
     </div>
     """
