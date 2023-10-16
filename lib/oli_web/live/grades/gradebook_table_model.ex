@@ -166,15 +166,18 @@ defmodule OliWeb.Grades.GradebookTableModel do
         case assigns.show_all_links do
           true ->
             ~H"""
-            <a href={
-              Routes.live_path(
-                OliWeb.Endpoint,
-                OliWeb.Progress.StudentResourceView,
-                @row.section.slug,
-                @row.id,
-                @resource_id
-              )
-            }>
+            <a
+              href={
+                Routes.live_path(
+                  OliWeb.Endpoint,
+                  OliWeb.Progress.StudentResourceView,
+                  @row.section.slug,
+                  @row.id,
+                  @resource_id
+                )
+              }
+              class="link"
+            >
               <span class="text-muted">Never Visited</span>
             </a>
             """
@@ -188,15 +191,18 @@ defmodule OliWeb.Grades.GradebookTableModel do
         case assigns.show_all_links do
           true ->
             ~H"""
-            <a href={
-              Routes.live_path(
-                OliWeb.Endpoint,
-                OliWeb.Progress.StudentResourceView,
-                @row.section.slug,
-                @row.id,
-                @resource_id
-              )
-            }>
+            <a
+              href={
+                Routes.live_path(
+                  OliWeb.Endpoint,
+                  OliWeb.Progress.StudentResourceView,
+                  @row.section.slug,
+                  @row.id,
+                  @resource_id
+                )
+              }
+              class="link"
+            >
               <span>Not Finished</span>
             </a>
             """

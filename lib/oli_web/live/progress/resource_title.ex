@@ -33,7 +33,7 @@ defmodule OliWeb.Progress.ResourceTitle do
           <% end %>
         </small>
       </div>
-      <a href={@url}><%= @node.revision.title %></a>
+      <a href={@url} class="link"><%= @node.revision.title %></a>
     </div>
     """
   end

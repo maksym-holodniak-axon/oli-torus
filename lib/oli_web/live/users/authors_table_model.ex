@@ -70,7 +70,7 @@ defmodule OliWeb.Users.AuthorsTableModel do
       Map.merge(assigns, %{id: id, name: name, family_name: family_name, given_name: given_name})
 
     ~H"""
-    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.AuthorsDetailView, @id)}>
+    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.AuthorsDetailView, @id)} class="link">
       <%= name(@name, @given_name, @family_name) %>
     </a>
     """

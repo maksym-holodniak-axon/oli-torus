@@ -61,7 +61,7 @@ defmodule OliWeb.Resources.PagesTableModel do
     assigns = Map.merge(assigns, %{slug: slug, title: title})
 
     ~H"""
-    <a href={Routes.resource_path(OliWeb.Endpoint, :edit, @project_slug, @slug)}>
+    <a href={Routes.resource_path(OliWeb.Endpoint, :edit, @project_slug, @slug)} class="link">
       <%= @title %>
     </a>
     """

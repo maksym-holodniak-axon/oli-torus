@@ -257,7 +257,7 @@ defmodule OliWeb.Resources.ActivitiesView do
         limit={limit()}
       />
 
-      <a href={Routes.activity_review_path(OliWeb.Endpoint, :index)}>Open Sync View</a>
+      <a href={Routes.activity_review_path(OliWeb.Endpoint, :index)} class="link">Open Sync View</a>
     </div>
     """
   end

@@ -125,7 +125,7 @@ defmodule OliWeb.Components.Delivery.Assignments do
         <% end %>
       </td>
       <td class="w-1/3 border-none text-right">
-        <a href={get_path(@section.slug, @page.slug, @preview_mode)}>Open</a>
+        <a href={get_path(@section.slug, @page.slug, @preview_mode)} class="link">Open</a>
       </td>
     </tr>
     """

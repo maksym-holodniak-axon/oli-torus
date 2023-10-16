@@ -33,7 +33,7 @@ defmodule OliWeb.Qa.Utils do
         </p>
         <p>
           For more information on the importance of providing contextual alternative text to non-text content, see the
-          <a href="https://webaim.org/techniques/alttext/#basics" target="_blank">alt text accessibility guide</a> on WebAIM.org.
+          <a href="https://webaim.org/techniques/alttext/#basics" class="link" target="_blank">alt text accessibility guide</a> on WebAIM.org.
         </p>
         """
 
@@ -45,7 +45,7 @@ defmodule OliWeb.Qa.Utils do
         </p>
         <p>
           For more information on the importance of providing textual context for links, see the
-          <a href="https://webaim.org/techniques/hypertext/link_text#text" target="_blank">Link text accessibility guide</a> on WebAIM.org.
+          <a href="https://webaim.org/techniques/hypertext/link_text#text" class="link" target="_blank">Link text accessibility guide</a> on WebAIM.org.
         </p>
         """
 

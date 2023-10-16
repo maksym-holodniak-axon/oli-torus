@@ -66,14 +66,17 @@ defmodule OliWeb.Products.Payments.TableModel do
         assigns = Map.merge(assigns, %{section: section})
 
         ~H"""
-        <a href={
-          Routes.live_path(
-            OliWeb.Endpoint,
-            OliWeb.Delivery.InstructorDashboard.InstructorDashboardLive,
-            @section.slug,
-            :overview
-          )
-        }>
+        <a
+          href={
+            Routes.live_path(
+              OliWeb.Endpoint,
+              OliWeb.Delivery.InstructorDashboard.InstructorDashboardLive,
+              @section.slug,
+              :overview
+            )
+          }
+          class="link"
+        >
           <span><%= @section.title %></span>
         </a>
         """
@@ -89,15 +92,18 @@ defmodule OliWeb.Products.Payments.TableModel do
         assigns = Map.merge(assigns, %{section: section, user: user})
 
         ~H"""
-        <a href={
-          Routes.live_path(
-            OliWeb.Endpoint,
-            OliWeb.Delivery.StudentDashboard.StudentDashboardLive,
-            @section.slug,
-            @user.id,
-            :content
-          )
-        }>
+        <a
+          href={
+            Routes.live_path(
+              OliWeb.Endpoint,
+              OliWeb.Delivery.StudentDashboard.StudentDashboardLive,
+              @section.slug,
+              @user.id,
+              :content
+            )
+          }
+          class="link"
+        >
           <span>
             <%= "#{safe_get(@user.family_name, "Unknown")}, #{safe_get(@user.given_name, "Unknown")}" %>
           </span>
@@ -139,7 +145,10 @@ defmodule OliWeb.Products.Payments.TableModel do
         assigns = Map.merge(assigns, %{payment: payment})
 
         ~H"""
-        <a href={"https://dashboard.stripe.com/test/payments/#{@payment.provider_payload["id"]}"}>
+        <a
+          href={"https://dashboard.stripe.com/test/payments/#{@payment.provider_payload["id"]}"}
+          class="link"
+        >
           View <i class="fas fa-external-link-alt ml-1"></i>
         </a>
         """

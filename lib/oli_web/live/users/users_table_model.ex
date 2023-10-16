@@ -52,7 +52,10 @@ defmodule OliWeb.Users.UsersTableModel do
         assigns = Map.merge(assigns, %{author: author, author_id: author_id})
 
         ~H"""
-        <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.AuthorsDetailView, @author_id)}>
+        <a
+          href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.AuthorsDetailView, @author_id)}
+          class="link"
+        >
           <span class="badge badge-dark"><%= @author.email %></span>
         </a>
         """
@@ -68,7 +71,7 @@ defmodule OliWeb.Users.UsersTableModel do
       Map.merge(assigns, %{id: id, name: name, given_name: given_name, family_name: family_name})
 
     ~H"""
-    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.UsersDetailView, @id)}>
+    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Users.UsersDetailView, @id)} class="link">
       <%= name(@name, @given_name, @family_name) %>
     </a>
     """

@@ -46,7 +46,10 @@ defmodule OliWeb.Projects.TableModel do
     case name do
       :title ->
         ~H"""
-        <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.OverviewLive, @project.slug)}>
+        <a
+          href={Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.OverviewLive, @project.slug)}
+          class="link"
+        >
           <%= @project.title %>
         </a>
         """

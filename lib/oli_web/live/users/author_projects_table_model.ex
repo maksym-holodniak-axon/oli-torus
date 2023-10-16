@@ -48,7 +48,7 @@ defmodule OliWeb.Users.AuthorProjectsTableModel do
     assigns = Map.merge(assigns, %{title: project.title, slug: project.slug})
 
     ~H"""
-    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.OverviewLive, @slug)}>
+    <a href={Routes.live_path(OliWeb.Endpoint, OliWeb.Projects.OverviewLive, @slug)} class="link">
       <%= @title %>
     </a>
     """
