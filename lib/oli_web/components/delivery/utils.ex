@@ -45,6 +45,22 @@ defmodule OliWeb.Components.Delivery.Utils do
     end
   end
 
+  def user_given_name(%SessionContext{user: user, author: author}) do
+    case {user, author} do
+      {%User{guest: true}, _} ->
+        "Guest"
+
+      {%User{given_name: given_name}, _} ->
+        given_name
+
+      {_, %Author{given_name: given_name}} ->
+        given_name
+
+      {_, _} ->
+        ""
+    end
+  end
+
   def user_name(%SessionContext{user: user, author: author}) do
     case {user, author} do
       {%User{guest: true}, _} ->

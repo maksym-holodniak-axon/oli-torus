@@ -21,7 +21,8 @@
       </tr>
       <tr>
         <td><strong>URL:</strong></td>
-        <td><%= external_link Routes.page_delivery_url(@conn, :index, @section.slug), to: Routes.page_delivery_url(@conn, :index, @section.slug) %></td>
+        <td><%= external_link url(OliWeb.Endpoint, ~p"/sections/#{@section.slug}"), to:
+        url(OliWeb.Endpoint, ~p"/sections/#{@section.slug}"), class: "link" %></td>
       </tr>
       <tr>
         <td><strong>Start Date:</strong></td>

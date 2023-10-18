@@ -1,7 +1,8 @@
 defmodule Oli.Plugs.DeliveryPreview do
-  import Phoenix.Controller
+  use OliWeb, :html
+
   import Plug.Conn
-  alias OliWeb.Router.Helpers, as: Routes
+  import Phoenix.Controller
 
   def init(_params) do
   end
@@ -12,7 +13,7 @@ defmodule Oli.Plugs.DeliveryPreview do
     if not is_nil(current_author) and is_nil(current_user),
       do:
         redirect(conn,
-          to: Routes.page_delivery_path(OliWeb.Endpoint, :index_preview, section.slug)
+          to: ~p"/sections/#{section.slug}/preview"
         )
         |> halt(),
       else: conn

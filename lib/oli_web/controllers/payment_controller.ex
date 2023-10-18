@@ -20,26 +20,34 @@ defmodule OliWeb.PaymentController do
       render(conn, "require_account.html", section_slug: section_slug)
     else
       context = SessionContext.init(conn)
+
       section =
         section
         |> Sections.localize_section_start_end_datetimes(context)
 
       summary = Paywall.summarize_access(user, section)
-      grace_period_seconds = if summary.grace_period_remaining == nil, do: 0, else: summary.grace_period_remaining
+
+      grace_period_seconds =
+        if summary.grace_period_remaining == nil, do: 0, else: summary.grace_period_remaining
+
       now_date = FormatDateTime.convert_datetime(DateTime.utc_now(), context)
       payment_due_date = DateTime.add(now_date, grace_period_seconds, :second)
 
       {:ok, amount} = Money.to_string(section.amount)
 
-      instructors = Sections.fetch_instructors(section.slug)
-      |> Enum.reduce([], fn a, m ->
-        m ++ [a.name]
-      end)
+      instructors =
+        Sections.fetch_instructors(section.slug)
+        |> Enum.reduce([], fn a, m ->
+          m ++ [a.name]
+        end)
 
       render(conn, "guard.html",
         context: context,
-        pay_by_card?: direct_payments_enabled?() and (section.payment_options == :direct or section.payment_options == :direct_and_deferred),
-        pay_by_code?: section.payment_options == :deferred or section.payment_options == :direct_and_deferred,
+        pay_by_card?:
+          direct_payments_enabled?() and
+            (section.payment_options == :direct or section.payment_options == :direct_and_deferred),
+        pay_by_code?:
+          section.payment_options == :deferred or section.payment_options == :direct_and_deferred,
         section_slug: section_slug,
         section_title: section.title,
         section: section,
@@ -107,7 +115,7 @@ defmodule OliWeb.PaymentController do
         case section.amount do
           nil ->
             conn
-            |> redirect(to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug))
+            |> redirect(to: ~p"/sections/#{section.slug}")
 
           amount ->
             get_provider_module()
@@ -115,7 +123,9 @@ defmodule OliWeb.PaymentController do
         end
       else
         conn
-        |> redirect(to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug))
+        |> redirect(
+          to: Routes.live_path(OliWeb.Endpoint, OliWeb.Delivery.Student.IndexLive, section.slug)
+        )
       end
     end
 

@@ -4,7 +4,6 @@ defmodule OliWeb.Delivery.StudentOnboarding.Wizard do
   alias OliWeb.Common.Stepper
   alias OliWeb.Common.Stepper.Step
   alias OliWeb.Delivery.StudentOnboarding.{Explorations, Intro, Survey}
-  alias OliWeb.Router.Helpers, as: Routes
 
   alias Phoenix.LiveView.JS
 
@@ -102,16 +101,16 @@ defmodule OliWeb.Delivery.StudentOnboarding.Wizard do
 
   def render(assigns) do
     ~H"""
-      <div>
-        <.live_component
-          id="student-onboarding-wizard"
-          module={Stepper}
-          steps={@steps}
-          current_step={@current_step_index}
-          on_cancel={if !@is_lti, do: JS.navigate(~p"/sections"), else: nil}
-          data={get_step_data(assigns)}
-        />
-      </div>
+    <div>
+      <.live_component
+        id="student-onboarding-wizard"
+        module={Stepper}
+        steps={@steps}
+        current_step={@current_step_index}
+        on_cancel={if !@is_lti, do: JS.navigate(~p"/sections"), else: nil}
+        data={get_step_data(assigns)}
+      />
+    </div>
     """
   end
 
@@ -120,12 +119,12 @@ defmodule OliWeb.Delivery.StudentOnboarding.Wizard do
 
   defp header(assigns) do
     ~H"""
-      <h5 class="px-9 py-4 border-gray-200 dark:border-gray-600 border-b text-sm font-semibold">
-        <%= @section.title %> Set Up
-      </h5>
-      <div class="overflow-y-auto scrollbar-hide relative h-full px-10 py-4">
-        <%= render_slot(@inner_block) %>
-      </div>
+    <h5 class="px-9 py-4 border-gray-200 dark:border-gray-600 border-b text-sm font-semibold">
+      <%= @section.title %> Set Up
+    </h5>
+    <div class="overflow-y-auto scrollbar-hide relative h-full px-10 py-4">
+      <%= render_slot(@inner_block) %>
+    </div>
     """
   end
 
@@ -133,28 +132,32 @@ defmodule OliWeb.Delivery.StudentOnboarding.Wizard do
 
   def render_step(%{current_step_name: @intro_step} = assigns) do
     ~H"""
-      <.header section={@section}>
-        <Intro.render section={@section} />
-      </.header>
+    <.header section={@section}>
+      <Intro.render section={@section} />
+    </.header>
     """
   end
 
   def render_step(%{current_step_name: @survey_step} = assigns) do
     ~H"""
-      <.header section={@section}>
-        <.live_component
-          id="onboarding_wizard_survey"
-          module={Survey}
-          user={@user} section={@section} survey={@survey} datashop_session_id={@datashop_session_id} />
-      </.header>
+    <.header section={@section}>
+      <.live_component
+        id="onboarding_wizard_survey"
+        module={Survey}
+        user={@user}
+        section={@section}
+        survey={@survey}
+        datashop_session_id={@datashop_session_id}
+      />
+    </.header>
     """
   end
 
   def render_step(%{current_step_name: @explorations_step} = assigns) do
     ~H"""
-      <.header section={@section}>
-        <Explorations.render />
-      </.header>
+    <.header section={@section}>
+      <Explorations.render />
+    </.header>
     """
   end
 
@@ -184,7 +187,7 @@ defmodule OliWeb.Delivery.StudentOnboarding.Wizard do
 
       {:noreply,
        push_navigate(socket,
-         to: Routes.page_delivery_path(socket, :index, socket.assigns.section.slug)
+         to: ~p"/sections/#{socket.assigns.section.slug}"
        )}
     else
       {:noreply,

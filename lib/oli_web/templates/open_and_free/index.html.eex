@@ -10,10 +10,15 @@
 </script>
 
 <div class="container mt-3">
-  <div class="d-flex flex-row mb-2">
-    <div class="flex-grow-1"></div>
-    <div><%= link "New Open and Free", to: Routes.select_source_path(OliWeb.Endpoint, :admin), class: "btn btn-md btn-outline-primary" %></div>
-  </div>
+    <div class="d-flex flex-row mb-2">
+      <div class="flex-grow-1"></div>
+      <div>
+        <%= link("New Open and Free",
+          to: ~p"/admin/open_and_free/create",
+          class: "btn btn-md btn-outline-primary"
+        ) %>
+      </div>
+    </div>
 
   <%= if Enum.count(@sections) == 0 do %>
     <div class="my-5 text-center">
@@ -36,7 +41,8 @@
                 <%= section.title %>
               </div>
               <div class="text-nowrap">
-                <%= external_link Routes.page_delivery_url(@conn, :index, section.slug), to: Routes.page_delivery_url(@conn, :index, section.slug), id: "section_link_#{section.slug}", class: "mr-2" %>
+                <%= external_link url(OliWeb.Endpoint, ~p"/sections/#{section.slug}"), to: url(OliWeb.Endpoint, ~p"/sections/#{section.slug}"),
+                id: "section_link_#{section.slug}", class: "link mr-2" %>
                 <button class="clipboardjs btn btn-xs btn-primary" data-clipboard-target="#<%= "section_link_#{section.slug}" %>">
                   <i class="far fa-clipboard"></i> Copy
                 </button>

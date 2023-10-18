@@ -64,7 +64,7 @@ defmodule OliWeb.PaymentProviders.StripeController do
 
         json(conn, %{
           result: "success",
-          url: Routes.page_delivery_path(OliWeb.Endpoint, :index, slug)
+          url: Routes.live_path(OliWeb.Endpoint, OliWeb.Delivery.Student.IndexLive, slug)
         })
 
       {:error, reason} when is_binary(reason) ->

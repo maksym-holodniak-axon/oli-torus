@@ -1,5 +1,5 @@
 defmodule OliWeb.Sections.SectionsTableModel do
-  use Phoenix.Component
+  use OliWeb, :html
 
   alias OliWeb.Common.SessionContext
   alias OliWeb.Common.Table.{ColumnSpec, SortableTableModel}
@@ -75,17 +75,7 @@ defmodule OliWeb.Sections.SectionsTableModel do
     assigns = Map.merge(assigns, %{section: section})
 
     ~H"""
-    <a
-      href={
-        Routes.live_path(
-          OliWeb.Endpoint,
-          OliWeb.Delivery.InstructorDashboard.InstructorDashboardLive,
-          @section.slug,
-          :manage
-        )
-      }
-      class="link"
-    >
+    <a href={~p"/sections/#{@section.slug}/manage"} class="link">
       <%= @section.title %>
     </a>
     """

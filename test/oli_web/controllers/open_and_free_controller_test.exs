@@ -146,7 +146,7 @@ defmodule OliWeb.OpenAndFreeControllerTest do
       conn =
         conn
         |> recycle()
-        |> get(Routes.page_delivery_path(conn, :index, section.slug))
+        |> get(~p"/sections/#{section.slug}")
 
       assert html_response(conn, 302) =~ "/sections/#{section.slug}/enroll"
 
@@ -204,7 +204,9 @@ defmodule OliWeb.OpenAndFreeControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, section: section} do
       conn =
-        put(conn, Routes.admin_open_and_free_path(conn, :update, section), section: @invalid_attrs)
+        put(conn, Routes.admin_open_and_free_path(conn, :update, section),
+          section: @invalid_attrs
+        )
 
       assert html_response(conn, 200) =~ "Edit Section"
     end

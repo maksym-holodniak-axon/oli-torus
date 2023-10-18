@@ -1,4 +1,4 @@
-defmodule OliWeb.Delivery.Student.Assignments do
+defmodule OliWeb.Delivery.Student.AssignmentsLive do
   use OliWeb, :live_view
 
   import OliWeb.Components.Delivery.Layouts

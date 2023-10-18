@@ -1,5 +1,5 @@
 defmodule OliWeb.Components.Delivery.NavSidebar do
-  use Phoenix.Component
+  use OliWeb, :html
 
   import OliWeb.Components.Delivery.Utils
   import Oli.Utils, only: [value_or: 2]
@@ -10,7 +10,6 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
   alias Oli.Resources.ResourceType
   alias Oli.Resources.Revision
   alias Oli.Publishing.AuthoringResolver
-  alias OliWeb.Router.Helpers, as: Routes
   alias Oli.Branding.Brand
   alias OliWeb.Components.Delivery.UserAccountMenu
   alias Oli.Delivery.Sections
@@ -258,33 +257,33 @@ defmodule OliWeb.Components.Delivery.NavSidebar do
 
   defp home_url(assigns) do
     if assigns[:preview_mode] do
-      Routes.page_delivery_path(OliWeb.Endpoint, :index_preview, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/preview"
     else
-      Routes.page_delivery_path(OliWeb.Endpoint, :index, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}"
     end
   end
 
   defp exploration_url(assigns) do
     if assigns[:preview_mode] do
-      Routes.page_delivery_path(OliWeb.Endpoint, :exploration_preview, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/preview/explorations"
     else
-      Routes.page_delivery_path(OliWeb.Endpoint, :exploration, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/explorations"
     end
   end
 
   defp discussion_url(assigns) do
     if assigns[:preview_mode] do
-      Routes.page_delivery_path(OliWeb.Endpoint, :discussion_preview, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/preview/discussion"
     else
-      Routes.page_delivery_path(OliWeb.Endpoint, :discussion, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/discussion"
     end
   end
 
   defp assignments_url(assigns) do
     if assigns[:preview_mode] do
-      Routes.page_delivery_path(OliWeb.Endpoint, :assignments_preview, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/preview/assignments"
     else
-      Routes.page_delivery_path(OliWeb.Endpoint, :assignments, assigns[:section_slug])
+      ~p"/sections/#{assigns[:section_slug]}/assignments"
     end
   end
 

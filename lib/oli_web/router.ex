@@ -949,12 +949,15 @@ defmodule OliWeb.Router do
         OliWeb.LiveSessionPlugs.SetPreviewMode,
         OliWeb.LiveSessionPlugs.RequireEnrollment
       ] do
-      live("/", Delivery.Student.Index)
-      live("/content", Delivery.Student.Content)
-      live("/discussion", Delivery.Student.Discussion)
-      live("/assignments", Delivery.Student.Assignments)
-      live("/explorations", Delivery.Student.Explorations)
+      live("/", Delivery.Student.IndexLive)
+      live("/content", Delivery.Student.ContentLive)
+      live("/discussion", Delivery.Student.DiscussionLive)
+      live("/assignments", Delivery.Student.AssignmentsLive)
+      live("/explorations", Delivery.Student.ExplorationsLive)
     end
+
+    # Redirect deprecated paths
+    get("/overview", Plugs.Redirect, to: "/sections/:section_slug")
 
     get("/container/:revision_slug", PageDeliveryController, :container)
     get("/page/:revision_slug", PageDeliveryController, :page)
@@ -993,11 +996,25 @@ defmodule OliWeb.Router do
       :pow_email_layout
     ])
 
-    # Redirect deprecated routes
-    get("/overview", PageDeliveryController, :index_preview)
-    get("/exploration", PageDeliveryController, :exploration_preview)
-    get("/discussion", PageDeliveryController, :discussion_preview)
-    get("/my_assignments", PageDeliveryController, :assignments_preview)
+    live_session :delivery_preview,
+      on_mount: [
+        OliWeb.LiveSessionPlugs.SetSection,
+        OliWeb.LiveSessionPlugs.SetCurrentUser,
+        OliWeb.LiveSessionPlugs.SetSessionContext,
+        OliWeb.LiveSessionPlugs.SetBrand,
+        OliWeb.LiveSessionPlugs.SetPreviewMode,
+        OliWeb.LiveSessionPlugs.RequireEnrollment
+      ] do
+      live("/", Delivery.Student.IndexLive, :preview)
+      live("/content", Delivery.Student.ContentLive, :preview)
+      live("/discussion", Delivery.Student.DiscussionLive, :preview)
+      live("/assignments", Delivery.Student.AssignmentsLive, :preview)
+      live("/explorations", Delivery.Student.ExplorationsLive, :preview)
+    end
+
+    # Redirect deprecated paths
+    get("/overview", Plugs.Redirect, to: "/sections/:section_slug/preview")
+
     get("/container/:revision_slug", PageDeliveryController, :container_preview)
     get("/page/:revision_slug", PageDeliveryController, :page_preview)
     get("/page/:revision_slug/page/:page", PageDeliveryController, :page_preview)
@@ -1032,7 +1049,7 @@ defmodule OliWeb.Router do
       :pow_email_layout
     ])
 
-    live("/:section_slug", Sections.OverviewView)
+    live("/:section_slug/manage", Sections.OverviewView)
 
     live("/:section_slug/grades/lms", Grades.GradesLive)
     live("/:section_slug/grades/lms_grade_updates", Grades.BrowseUpdatesView)

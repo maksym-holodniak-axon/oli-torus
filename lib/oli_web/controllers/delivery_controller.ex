@@ -95,7 +95,7 @@ defmodule OliWeb.DeliveryController do
 
   defp redirect_to_page_delivery(conn, section) do
     redirect(conn,
-      to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug)
+      to: ~p"/sections/#{section.slug}"
     )
   end
 
@@ -328,15 +328,17 @@ defmodule OliWeb.DeliveryController do
         with {:ok, user} <- current_or_guest_user(conn, section.requires_enrollment),
              true <- Sections.is_enrolled?(user.id, section.slug) do
           redirect(conn,
-            to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug)
+            to: ~p"/sections/#{section.slug}"
           )
         else
           {:redirect, nil} ->
             # guest user cant access courses that require enrollment
             redirect_path =
               "/session/new?section=#{section.slug}"
+
             conn
-              |> redirect(to: redirect_path)
+            |> redirect(to: redirect_path)
+
           _ ->
             section = Oli.Repo.preload(section, [:base_project])
 
@@ -358,7 +360,7 @@ defmodule OliWeb.DeliveryController do
            user <- Repo.preload(user, [:platform_roles]) do
         if Sections.is_enrolled?(user.id, section.slug) do
           redirect(conn,
-            to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug)
+            to: ~p"/sections/#{section.slug}"
           )
         else
           Sections.enroll(user.id, section.id, [ContextRoles.get_role(:context_learner)])
@@ -373,7 +375,7 @@ defmodule OliWeb.DeliveryController do
 
           conn
           |> create_pow_user(:user, user)
-          |> redirect(to: Routes.page_delivery_path(OliWeb.Endpoint, :index, section.slug))
+          |> redirect(to: ~p"/sections/#{section.slug}")
         end
       else
         {:redirect, nil} ->
@@ -427,7 +429,9 @@ defmodule OliWeb.DeliveryController do
   def download_course_content_info(conn, %{"section_slug" => slug}) do
     case Oli.Delivery.Sections.get_section_by_slug(slug) do
       nil ->
-        Phoenix.Controller.redirect(conn, to: Routes.static_page_path(OliWeb.Endpoint, :not_found))
+        Phoenix.Controller.redirect(conn,
+          to: Routes.static_page_path(OliWeb.Endpoint, :not_found)
+        )
 
       section ->
         {_total_count, containers_with_metrics} = Helpers.get_containers(section)
@@ -455,7 +459,9 @@ defmodule OliWeb.DeliveryController do
   def download_students_progress(conn, %{"section_slug" => slug}) do
     case Oli.Delivery.Sections.get_section_by_slug(slug) do
       nil ->
-        Phoenix.Controller.redirect(conn, to: Routes.static_page_path(OliWeb.Endpoint, :not_found))
+        Phoenix.Controller.redirect(conn,
+          to: Routes.static_page_path(OliWeb.Endpoint, :not_found)
+        )
 
       section ->
         students = Helpers.get_students(section)
@@ -493,7 +499,9 @@ defmodule OliWeb.DeliveryController do
   def download_learning_objectives(conn, %{"section_slug" => slug}) do
     case Oli.Delivery.Sections.get_section_by_slug(slug) do
       nil ->
-        Phoenix.Controller.redirect(conn, to: Routes.static_page_path(OliWeb.Endpoint, :not_found))
+        Phoenix.Controller.redirect(conn,
+          to: Routes.static_page_path(OliWeb.Endpoint, :not_found)
+        )
 
       section ->
         contents =
@@ -525,7 +533,9 @@ defmodule OliWeb.DeliveryController do
   def download_quiz_scores(conn, %{"section_slug" => slug}) do
     case Oli.Delivery.Sections.get_section_by_slug(slug) do
       nil ->
-        Phoenix.Controller.redirect(conn, to: Routes.static_page_path(OliWeb.Endpoint, :not_found))
+        Phoenix.Controller.redirect(conn,
+          to: Routes.static_page_path(OliWeb.Endpoint, :not_found)
+        )
 
       section ->
         enrollments =

@@ -1,4 +1,4 @@
-defmodule OliWeb.Delivery.Student.Discussion do
+defmodule OliWeb.Delivery.Student.DiscussionLive do
   use OliWeb, :live_view
 
   import OliWeb.Components.Delivery.Layouts

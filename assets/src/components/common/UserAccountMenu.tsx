@@ -202,7 +202,7 @@ export const UserAccountMenu = ({
         "
         onClick={() => setIsPopoverOpen(!isPopoverOpen)}
       >
-        <div className="">
+        <div className="self-center">
           <div className="username">{user.name}</div>
         </div>
         <div className="user-icon ml-4 self-center">

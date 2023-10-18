@@ -44,8 +44,8 @@ defmodule OliWeb.Components.Delivery.Layouts do
 
   def header(assigns) do
     ~H"""
-    <div class="h-14 flex flex-row bg-delivery-header dark:bg-delivery-header-dark">
-      <div class="w-48 p-3">
+    <div class="flex flex-row bg-delivery-header dark:bg-delivery-header-dark">
+      <div class="w-48 p-2">
         <a
           className="block lg:p-2 lg:mb-14 mx-auto"
           href={logo_link_path(@preview_mode, @section, @ctx.user)}
@@ -53,17 +53,17 @@ defmodule OliWeb.Components.Delivery.Layouts do
           <.logo_img />
         </a>
       </div>
-      <div class="flex-grow-1 p-3">
+      <div class="flex-grow-1 p-2">
         <div class="hidden md:block">
           <span class="text-2xl text-bold"><%= @section.title %></span>
         </div>
       </div>
-      <div class="p-3">
+      <div class="p-2">
         <div class="hidden md:block">
           <UserAccountMenu.menu ctx={@ctx} section={@section} />
         </div>
         <button
-          class="block md:hidden py-1 px-2.5 rounded border border-transparent hover:border-gray-300 active:bg-gray-100"
+          class="block md:hidden py-1.5 px-3 rounded border border-transparent hover:border-gray-300 active:bg-gray-100"
           phx-click={toggle_collapsed_nav()}
         >
           <i class="fa-solid fa-bars"></i>
@@ -134,12 +134,14 @@ defmodule OliWeb.Components.Delivery.Layouts do
       </.nav_link>
       <div class="flex-grow-1"></div>
 
-      <div class="hidden md:flex">
+      <div class="hidden md:flex w-full px-6 py-4 text-center">
         <.tech_support_button id="tech-support" ctx={@ctx} />
       </div>
 
-      <div class="flex flex-row md:hidden align-center justify-between">
-        <.tech_support_button id="tech-support-collapsed" ctx={@ctx} />
+      <div class="flex flex-row md:hidden align-center justify-between border-t border-gray-300 dark:border-gray-800">
+        <div class="px-6 py-4">
+          <.tech_support_button id="tech-support-collapsed" ctx={@ctx} />
+        </div>
 
         <div class="px-6 py-4">
           <UserAccountMenu.menu ctx={@ctx} section={@section} />
@@ -191,14 +193,12 @@ defmodule OliWeb.Components.Delivery.Layouts do
 
   def tech_support_button(assigns) do
     ~H"""
-    <div class="px-6 py-4 text-center">
-      <%= React.component(
-        @ctx,
-        "Components.TechSupportButton",
-        %{},
-        id: @id
-      ) %>
-    </div>
+    <%= React.component(
+      @ctx,
+      "Components.TechSupportButton",
+      %{},
+      id: @id
+    ) %>
     """
   end
 end

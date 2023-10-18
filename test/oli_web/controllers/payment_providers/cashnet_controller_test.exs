@@ -77,7 +77,7 @@ defmodule OliWeb.PaymentProviders.CashnetControllerTest do
       conn = get(conn, Routes.payment_path(conn, :make_payment, section.slug))
 
       assert html_response(conn, 302) =~
-               "You are being <a href=\"/sections/#{section.slug}/overview\">redirected"
+               "You are being <a href=\"/sections/#{section.slug}\">redirected"
     end
   end
 
@@ -188,6 +188,5 @@ defmodule OliWeb.PaymentProviders.CashnetControllerTest do
       assert finalized.provider_type == :cashnet
       assert finalized.provider_id == payment_ref
     end
-
   end
 end
