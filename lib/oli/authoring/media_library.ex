@@ -7,6 +7,8 @@ defmodule Oli.Authoring.MediaLibrary do
   alias ExAws.S3
   alias ExAws
 
+  require Logger
+
   @doc """
   Returns the number of the non-deleted media items in a particular
   project's media library.
@@ -216,7 +218,14 @@ defmodule Oli.Authoring.MediaLibrary do
 
     case upload_file(bucket_name, path, file_contents) do
       {:ok, %{status_code: 200}} -> {:ok, "https://#{media_url}#{path}"}
-      _ -> {:error, {:persistence}}
+      {:error, e} ->
+        Logger.error "Error uploading file: #{inspect e}"
+
+        {:error, {:persistence}}
+      e ->
+        Logger.error "Error uploading file: #{inspect e}"
+
+        {:error, {:persistence}}
     end
   end
 
