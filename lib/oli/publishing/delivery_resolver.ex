@@ -395,6 +395,36 @@ defmodule Oli.Publishing.DeliveryResolver do
   end
 
   @doc """
+    Retrieves revisions and associated section resources for survey content in a specified section.
+
+    ## Parameters
+
+    - `section_slug` (String): The unique identifier (slug) for the section.
+
+    ## Returns
+
+    A list of tuples containing revisions and section resources. Each tuple is of the form `{revision, section_resource}`.
+
+    ## Examples
+
+    ```elixir
+    result = practice_pages_revisions_and_section_resources_with_surveys("example_section_slug")
+    IO.inspect(result)
+  """
+  def practice_pages_revisions_and_section_resources_with_surveys(section_slug) do
+    from([sr, s, _spp, _pr, rev] in section_resource_revisions(section_slug),
+      join: content_elem in fragment("jsonb_array_elements(?->'model')", rev.content),
+      on: true,
+      where:
+        rev.resource_type_id == 1 and rev.graded == false and rev.deleted == false and
+          fragment("?->>'type'", content_elem) == "survey",
+      select: {rev, sr},
+      order_by: [asc: sr.numbering_level, asc: sr.numbering_index]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Returns the current revisions of all page resources whose have the given resource_id in their "relates_to" attribute
   ## Examples
       iex> targeted_via_related_to(valid_section_slug, valid_resource_id)
