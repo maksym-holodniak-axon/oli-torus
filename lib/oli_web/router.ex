@@ -1373,13 +1373,5 @@ defmodule OliWeb.Router do
 
       post("/rules", Api.RulesEngineController, :execute)
     end
-
-    scope "/dev", OliWeb do
-      pipe_through([:browser])
-
-      get("/flame_graphs", DevController, :flame_graphs)
-
-      live_storybook("/storybook", backend_module: OliWeb.Storybook)
-    end
   end
 end
