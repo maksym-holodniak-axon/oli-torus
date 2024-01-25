@@ -70,7 +70,7 @@ defmodule OliWeb.Users.UsersDetailView do
            breadcrumbs: set_breadcrumbs(user),
            user: user,
            csrf_token: csrf_token,
-           changeset: user_changeset(user),
+           form: to_form(user_changeset(user)) |> IO.inspect(),
            user_lti_params: LtiParams.all_user_lti_params(user.id),
            enrolled_sections: enrolled_sections,
            disabled_edit: true
@@ -79,7 +79,7 @@ defmodule OliWeb.Users.UsersDetailView do
   end
 
   attr(:breadcrumbs, :any)
-  attr(:changeset, :map)
+  attr(:form, :map)
   attr(:csrf_token, :any)
   attr(:modal, :any, default: nil)
   attr(:title, :string, default: "User Details")
@@ -92,87 +92,31 @@ defmodule OliWeb.Users.UsersDetailView do
       <%= render_modal(assigns) %>
       <Groups.render>
         <Group.render label="Details" description="User details">
-          <.form for={@changeset} phx-change="change" phx-submit="submit" autocomplete="off">
+          <.form for={@form} phx-change="change" phx-submit="submit" autocomplete="off">
             <ReadOnly.render label="Sub" value={@user.sub} />
             <ReadOnly.render label="Name" value={@user.name} />
             <div class="form-group">
               <label for="given_name">Given Name</label>
-              <input
-                value={Map.merge(@changeset.data, @changeset.changes).given_name}
+              <.input
+                field={@form[:given_name]}
                 id="given_name"
-                name="user[given_name]"
                 class="form-control"
                 disabled={@disabled_edit}
               />
             </div>
             <div class="form-group">
               <label for="family_name">Last Name</label>
-              <input
-                value={Map.merge(@changeset.data, @changeset.changes).family_name}
+              <.input
+                field={@form[:family_name]}
                 id="family_name"
-                name="user[family_name]"
                 class="form-control"
                 disabled={@disabled_edit}
               />
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input
-                value={Map.merge(@changeset.data, @changeset.changes).email}
-                id="email"
-                name="user[email]"
-                class="form-control"
-                disabled={@disabled_edit}
-              />
+              <.input field={@form[:email]} id="email" class="form-control" disabled={@disabled_edit} />
             </div>
-            <ReadOnly.render label="Guest" value={boolean(@user.guest)} />
-            <%= if Application.fetch_env!(:oli, :age_verification)[:is_enabled] == "true" do %>
-              <ReadOnly.render
-                label="Confirmed is 13 or older on creation"
-                value={boolean(@user.age_verified)}
-              />
-            <% end %>
-            <div class="form-control mb-3">
-              <input
-                id="independent_learner"
-                name="user[independent_learner]"
-                type="checkbox"
-                class="form-check-input"
-                checked={fetch_field(@changeset, :independent_learner)}
-                disabled={@disabled_edit}
-              />
-              <label for="independent_learner" class="form-check-label mr-2">
-                Independent Learner
-              </label>
-            </div>
-            <section class="mb-2">
-              <heading>
-                <p>Enable Independent Section Creation</p>
-                <small>
-                  Allow this user to create "Independent" sections and enroll students via invitation link without an LMS
-                </small>
-              </heading>
-              <div class="form-control">
-                <input
-                  id="can_create_sections"
-                  name="user[can_create_sections]"
-                  type="checkbox"
-                  class="form-check-input"
-                  checked={fetch_field(@changeset, :can_create_sections)}
-                  disabled={@disabled_edit}
-                />
-                <label for="can_create_sections" class="form-check-label mr-2">
-                  Can Create Sections
-                </label>
-              </div>
-            </section>
-            <ReadOnly.render label="Research Opt Out" value={boolean(@user.research_opt_out)} />
-            <ReadOnly.render
-              label="Email Confirmed"
-              value={render_date(@user, :email_confirmed_at, @ctx)}
-            />
-            <ReadOnly.render label="Created" value={render_date(@user, :inserted_at, @ctx)} />
-            <ReadOnly.render label="Last Updated" value={render_date(@user, :updated_at, @ctx)} />
             <%= unless @disabled_edit do %>
               <button type="submit" class="float-right btn btn-md btn-primary mt-2">Save</button>
             <% end %>
@@ -359,8 +303,13 @@ defmodule OliWeb.Users.UsersDetailView do
   end
 
   def handle_event("change", %{"user" => params}, socket) do
-    {:noreply,
-     assign(socket, changeset: user_changeset(socket.assigns.user, cast_params(params)))}
+    form =
+      socket.assigns.user
+      |> user_changeset(cast_params(params))
+      |> to_form()
+      |> IO.inspect()
+
+    {:noreply, assign(socket, form: form)}
   end
 
   def handle_event("submit", %{"user" => params}, socket) do
